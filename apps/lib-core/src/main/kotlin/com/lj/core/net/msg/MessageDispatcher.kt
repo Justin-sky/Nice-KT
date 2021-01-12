@@ -29,7 +29,7 @@ object MessageDispatcher {
         }
     }
 
-    suspend fun dispatch(msg:Msg){
+    fun dispatch(socketId:String, msg:Msg){
         val cmdExecutor = cmdHandlers.get(msg.msgId)
         if(cmdExecutor == null){
             Logger.error("message executor missed, cmd=${msg.msgId}")
@@ -37,7 +37,7 @@ object MessageDispatcher {
         }
 
         try {
-            cmdExecutor.method.invoke(cmdExecutor.handler, msg)
+            cmdExecutor.method.invoke(cmdExecutor.handler,socketId, msg)
         }catch (e:Exception){
             Logger.error("dispatch error: ${msg.msgId}, ${e.cause}")
         }
