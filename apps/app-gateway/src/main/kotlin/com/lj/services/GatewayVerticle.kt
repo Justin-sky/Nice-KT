@@ -1,0 +1,97 @@
+package com.lj.services
+
+import com.lj.core.eventBus.EventBusAddress
+import io.vertx.core.Handler
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.json.JsonObject
+import io.vertx.core.parsetools.RecordParser
+import io.vertx.kotlin.servicediscovery.getRecordAwait
+import io.vertx.servicediscovery.types.EventBusService
+import io.vertx.serviceproxy.ServiceProxyBuilder
+import kt.scaffold.Application
+import kt.scaffold.common.MicroServiceVerticle
+import kt.scaffold.tools.logger.Logger
+import io.vertx.servicediscovery.Record
+import javax.swing.DebugGraphics
+import javax.xml.bind.JAXBElement
+
+class GatewayVerticle :MicroServiceVerticle(){
+
+     override fun start() {
+        super.start()
+
+        val tcpServerOptions = Application.tcpServerOptions()
+        val tcpServer = this.vertx.createNetServer(tcpServerOptions)
+
+        tcpServer.connectHandler(){ socket ->
+            Logger.debug("Connect ... ${socket.remoteAddress()} ")
+
+            val parser = RecordParser.newFixed(4)
+            var size = -1
+            parser.setOutput { buffer ->
+                if (-1 == size) {
+                    size = buffer.getInt(0)
+                    parser.fixedSizeMode(size)
+                } else {
+                    val buf = buffer.getBytes()
+                    vertx.eventBus().request<ByteArray>(EventBusAddress.PROTO_ADDRESS, buf){ response->
+                        if(response.succeeded()){
+                            socket.write(Buffer.buffer(response.result().body()))
+                        }
+                    }
+
+                    parser.fixedSizeMode(4)
+                    size = -1
+                }
+            }
+            //socket.handler(parser)
+
+            //TODO test
+            socket.handler { buffer ->
+                Logger.debug("receive msg: ${buffer.toString()}")
+//                vertx.eventBus().request<String>(EventBusAddress.PROTO_ADDRESS, buffer.toString()) { response ->
+//                    if (response.succeeded()) {
+//                        Logger.debug(response.result().body())
+//
+//                        socket.write(response.result().body())
+//                    }
+//                }
+
+               // discovery.getRecordAwait({r:Record->1000 == r.metadata.getInteger("server_id")})
+
+                discovery.getRecord(
+                    { r: Record ->
+                        1000 == r.metadata.getInteger("server_id")
+                    }
+                ) { ar ->
+                    if (ar.succeeded()) {
+                        val record = ar.result()
+
+                        val reference =  discovery.getReference(record)
+                        val service = reference.getAs(GameServerService::class.java)
+
+                        val msg = Msg(1,1,100,"test")
+                        service.dispatchMsg(msg, Handler {rs->
+                            Logger.debug(rs.result());
+                        })
+
+                        reference.release()
+                    } else {
+                        // lookup failed
+                    }
+                }
+
+
+            }
+        }
+
+        tcpServer.exceptionHandler(){
+            Logger.debug("exception ${it.message}")
+        }
+
+        val host = Application.config.getString("app.tcpServer.host")
+        val port = Application.config.getInt("app.tcpServer.port")
+        tcpServer.listen(port,host)
+        Logger.info("GateWay Server listen: $host: $port")
+    }
+}

@@ -1,0 +1,13 @@
+.idea/
+.gradle/
+apps/app-allinone/build/
+apps/app-gameserver/build/
+apps/app-gateway/build/
+apps/app-login/build/
+apps/lib-core/build/
+apps/vertxResearch/build/
+subProjects/jodd-dependency/build/
+subProjects/nice-crypto/build/
+subProjects/nice-log/build/
+subProjects/nice-scaffold/build/
+subProjects/nice-tools/build/
