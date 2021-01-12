@@ -1,15 +1,20 @@
 package com.lj.services
 
-import com.lj.core.msg.MessageDispatcher
-import com.lj.core.msg.Msg
+import com.lj.core.net.msg.MessageDispatcher
+import com.lj.core.net.msg.Msg
 import com.lj.proto.OpcodeOuterClass
+import kt.scaffold.Application
 
 suspend fun main() {
 
-    MessageDispatcher.initialize("com.lj.services.msg")
+    //初始化Vertx
+    Application.setupVertx()
 
-    MessageDispatcher.dispatch(Msg(1,
-        OpcodeOuterClass.Opcode.MSG_C2G_LoginGate_VALUE,
-        1,
-        ""))
+    //启动Login Server
+    Application.deployVerticle(LoginVerticle::class.java.name,"LoginVerticle")
+
+    //设置回调
+    Application.setupOnStartAndOnStop()
+
+
 }

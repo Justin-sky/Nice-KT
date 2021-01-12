@@ -1,8 +1,8 @@
 package com.lj.services.msg
 
-import com.lj.core.msg.BaseHandler
-import com.lj.core.msg.Handler
-import com.lj.core.msg.Msg
+import com.lj.core.net.msg.BaseHandler
+import com.lj.core.net.msg.Handler
+import com.lj.core.net.msg.Msg
 import com.lj.proto.OpcodeOuterClass
 import kt.scaffold.tools.logger.Logger
 

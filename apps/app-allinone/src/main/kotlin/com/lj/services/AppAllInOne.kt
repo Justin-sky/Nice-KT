@@ -8,6 +8,10 @@ suspend fun main() {
     //初始化Vertx
     Application.setupVertx()
 
+    //启动Login Server
+    Application.deployVerticle(LoginVerticle::class.java.name,"LoginVerticle")
+
+
     //启动 Gateway Server
     Application.deployVerticle(GatewayVerticle::class.java.name,"GatewayVerticle")
 

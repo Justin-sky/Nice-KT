@@ -1,4 +1,4 @@
-package com.lj.core.msg
+package com.lj.core.net.msg
 
 import com.lj.core.utils.ClassScanner
 import kt.scaffold.tools.logger.Logger

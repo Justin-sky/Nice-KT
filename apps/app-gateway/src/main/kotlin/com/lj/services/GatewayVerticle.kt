@@ -1,7 +1,8 @@
 package com.lj.services
 
 import com.lj.core.eventBus.EventBusAddress
-import com.lj.core.msg.Msg
+import com.lj.core.net.msg.Msg
+import com.lj.core.net.parser.NetMsgParser
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.parsetools.RecordParser
@@ -25,25 +26,7 @@ class GatewayVerticle :MicroServiceVerticle(){
         tcpServer.connectHandler(){ socket ->
             Logger.debug("Connect ... ${socket.remoteAddress()} ")
 
-            val parser = RecordParser.newFixed(4)
-            var size = -1
-            parser.setOutput { buffer ->
-                if (-1 == size) {
-                    size = buffer.getInt(0)
-                    parser.fixedSizeMode(size)
-                } else {
-                    val buf = buffer.getBytes()
-                    vertx.eventBus().request<ByteArray>(EventBusAddress.PROTO_ADDRESS, buf){ response->
-                        if(response.succeeded()){
-                            socket.write(Buffer.buffer(response.result().body()))
-                        }
-                    }
-
-                    parser.fixedSizeMode(4)
-                    size = -1
-                }
-            }
-            //socket.handler(parser)
+            socket.handler(NetMsgParser.decode())
 
             //TODO test
             socket.handler { buffer ->

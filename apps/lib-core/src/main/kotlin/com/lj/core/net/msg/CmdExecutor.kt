@@ -1,4 +1,4 @@
-package com.lj.core.msg
+package com.lj.core.net.msg
 
 import java.lang.reflect.Method
 
