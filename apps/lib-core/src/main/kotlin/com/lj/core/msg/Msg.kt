@@ -1,4 +1,4 @@
-package com.lj.services
+package com.lj.core.msg
 
 import io.vertx.codegen.annotations.DataObject
 import io.vertx.core.json.JsonObject

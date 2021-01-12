@@ -3,9 +3,6 @@ package kt.scaffold.common
 import io.vertx.servicediscovery.Record;
 import io.vertx.core.impl.ConcurrentHashSet
 import io.vertx.core.json.JsonObject
-import io.vertx.core.logging.Logger
-import io.vertx.core.logging.LoggerFactory
-
 import io.vertx.servicediscovery.ServiceDiscoveryOptions
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
@@ -29,11 +26,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kt.scaffold.Application
+import kt.scaffold.tools.logger.Logger
 
 
 open class MicroServiceVerticle :CoroutineVerticle(){
-
-    private val logger: Logger = LoggerFactory.getLogger(MicroServiceVerticle::class.java)
 
     lateinit var  discovery: ServiceDiscovery ;
     lateinit var  circuitBreaker: CircuitBreaker
@@ -89,17 +85,13 @@ open class MicroServiceVerticle :CoroutineVerticle(){
     }
 
     private suspend fun publish(record: Record) {
-        if (discovery == null) {
-            try {
-                start()
-            } catch (e: Exception) {
-                throw RuntimeException("Cannot create discovery service")
-            }
+        try {
+            val re = discovery.publishAwait(record)
+            registeredRecords.add(re)
+        }catch (e:Exception){
+            Logger.error("publish error: ${record.name},e:${e.cause}")
         }
-        val record = discovery.publishAwait(record)
-        if(record != null){
-            registeredRecords.add(record)
-        }
+
     }
 
     override fun stop(stopPromise:Promise<Void>) {

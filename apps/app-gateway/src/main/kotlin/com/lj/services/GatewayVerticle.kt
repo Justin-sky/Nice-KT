@@ -1,6 +1,7 @@
 package com.lj.services
 
 import com.lj.core.eventBus.EventBusAddress
+import com.lj.core.msg.Msg
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.parsetools.RecordParser
@@ -78,7 +79,7 @@ class GatewayVerticle :MicroServiceVerticle(){
                         val reference =  discovery.getReference(record)
                         val service = reference.getAs(GameServerService::class.java)
 
-                        val msg = Msg(1,1,100,"test")
+                        val msg = Msg(1, 1, 100, "test")
                         service.dispatchMsg(msg, Handler {rs->
                             Logger.debug(rs.result());
                         })

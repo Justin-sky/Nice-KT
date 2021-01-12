@@ -1,7 +1,7 @@
 package com.lj.services.impl
 
 import com.lj.services.GameServerService
-import com.lj.services.Msg
+import com.lj.core.msg.Msg
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.Handler

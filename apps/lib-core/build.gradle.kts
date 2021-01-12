@@ -1,20 +1,34 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.google.protobuf.gradle.*
 
 plugins {
+    java
+    idea
+    id("com.google.protobuf") version "0.8.8"
     kotlin("jvm")
 }
 
+repositories {
+    maven("https://plugins.gradle.org/m2/")
+}
+
+val protobufVersion = "3.11.3"
+val vertxVersion = "3.9.4"
 dependencies {
     api(project(":subProjects:nice-scaffold"))
-    api("io.vertx:vertx-service-proxy:3.9.4")
-    api("io.vertx:vertx-lang-kotlin-coroutines:3.9.4")
-
+    api("io.vertx:vertx-codegen:3.9.4")
+    api("io.vertx:vertx-lang-kotlin-gen:3.9.4")
+    api("io.vertx:vertx-service-proxy:$vertxVersion")
+    api("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
+    api("com.google.protobuf:protobuf-java:$protobufVersion")
+    api("org.jetbrains.kotlin:kotlin-reflect:1.4.20")
     // android gradle依赖：implementation 和compile的区别
     // 参考: https://www.jianshu.com/p/f34c179bc9d0 根据需要选择使用不同的依赖设定方式
 
     configurations.all {
         this.exclude(group = "org.slf4j", module = "slf4j-log4j12")
     }
+
+    api("com.google.protobuf:protobuf-gradle-plugin:0.8.14")
 }
 
 tasks.register<Jar>("sourcesJar") {
@@ -22,13 +36,27 @@ tasks.register<Jar>("sourcesJar") {
     archiveClassifier.set("sources")
 }
 
-val compileKotlin: KotlinCompile by tasks
+val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
 
-val compileTestKotlin: KotlinCompile by tasks
+val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
 
+
+protobuf{
+    protoc {
+        // The artifact spec for the Protobuf Compiler
+        artifact = "com.google.protobuf:protoc:3.6.1"
+    }
+}
+
+sourceSets{
+    main{
+        java.srcDirs("${buildDir.absolutePath}/generated/source/proto/main/java")
+        println("${buildDir.absolutePath}/generated/source/proto/main")
+    }
+}

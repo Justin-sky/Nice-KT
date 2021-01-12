@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     java
+    idea
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
     kotlin("jvm")
     kotlin("kapt")
@@ -15,9 +16,6 @@ dependencies {
 
     //api(files("conf"))
     api(project(":apps:lib-core"))
-
-    implementation("io.vertx:vertx-codegen:3.9.4")
-    implementation("io.vertx:vertx-lang-kotlin-gen:3.9.4")
 
     kapt("io.vertx:vertx-codegen:3.9.4:processor")
     compileOnly("io.vertx:vertx-codegen:3.9.4")
