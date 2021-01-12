@@ -4,7 +4,6 @@ import com.lj.core.utils.ClassScanner
 import kt.scaffold.tools.logger.Logger
 import java.lang.Exception
 import java.lang.RuntimeException
-import kotlin.reflect.full.findAnnotation
 
 object MessageDispatcher {
 
@@ -16,7 +15,7 @@ object MessageDispatcher {
             try{
                 val handler = cls.getDeclaredConstructor().newInstance()
                 val method = cls.getMethod("process", Msg::class.java)
-                val msgId = cls.getAnnotation(Handler::class.java).command
+                val msgId = cls.getAnnotation(Handler::class.java).opcode
 
                 var cmdExecutor = cmdHandlers.get(msgId)
                 if (cmdExecutor!=null) throw RuntimeException("cmd[$msgId] duplicated")
