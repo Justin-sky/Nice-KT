@@ -2,7 +2,7 @@ package com.lj
 
 import kt.scaffold.Application
 
-fun main() {
+suspend fun main() {
 
     //初始化Vertx
     Application.setupVertx()

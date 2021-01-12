@@ -13,15 +13,25 @@ import io.vertx.core.*
 import java.util.ArrayList
 import java.util.function.Consumer
 import io.vertx.core.AsyncResult
+import io.vertx.core.eventbus.Message
+import io.vertx.kotlin.coroutines.CoroutineVerticle
+import io.vertx.kotlin.coroutines.awaitEvent
+import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
+import io.vertx.kotlin.servicediscovery.publishAwait
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.types.MessageSource;
 import java.lang.Exception
 import io.vertx.servicediscovery.types.EventBusService
 import io.vertx.servicediscovery.types.HttpEndpoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kt.scaffold.Application
 
 
-open class MicroServiceVerticle :AbstractVerticle(){
+open class MicroServiceVerticle :CoroutineVerticle(){
 
     private val logger: Logger = LoggerFactory.getLogger(MicroServiceVerticle::class.java)
 
@@ -29,7 +39,7 @@ open class MicroServiceVerticle :AbstractVerticle(){
     lateinit var  circuitBreaker: CircuitBreaker
     val registeredRecords = ConcurrentHashSet<Record>()
 
-    override fun start() {
+    override suspend fun start() {
         //init service discovery instance
         discovery = ServiceDiscovery.create(vertx,
             ServiceDiscoveryOptions().setBackendConfiguration(JsonObject())
@@ -49,38 +59,36 @@ open class MicroServiceVerticle :AbstractVerticle(){
         )
     }
 
-    fun publishHttpEndpoint(name: String, host: String, port: Int, completionHandler: Handler<AsyncResult<Void>>) {
+    suspend fun publishHttpEndpoint(name: String, host: String, port: Int) {
         val record: Record = HttpEndpoint.createRecord(name, host, port, "/")
-        publish(record, completionHandler)
+        publish(record)
     }
 
-    fun publishMessageSource(
+    suspend fun publishMessageSource(
         name: String,
         address: String,
         contentClass: Class<*>,
-        completionHandler: Handler<AsyncResult<Void>>
     ) {
         val record = MessageSource.createRecord(name, address, contentClass)
-        publish(record, completionHandler)
+        publish(record)
     }
 
-    fun publishMessageSource(name: String, address: String, completionHandler: Handler<AsyncResult<Void>>) {
+    suspend fun publishMessageSource(name: String, address: String) {
         val record: Record = MessageSource.createRecord(name, address)
-        publish(record, completionHandler)
+        publish(record)
     }
 
-    fun publishEventBusService(
+    suspend fun publishEventBusService(
         name: String,
         address: String,
         serviceClass: Class<*>,
-        metaJson:JsonObject,
-        completionHandler: Handler<AsyncResult<Void>>
+        metaJson:JsonObject
     ) {
         val record = EventBusService.createRecord(name, address, serviceClass, metaJson)
-        publish(record, completionHandler)
+        publish(record)
     }
 
-    private fun publish(record: Record, completionHandler: Handler<AsyncResult<Void>>) {
+    private suspend fun publish(record: Record) {
         if (discovery == null) {
             try {
                 start()
@@ -88,11 +96,9 @@ open class MicroServiceVerticle :AbstractVerticle(){
                 throw RuntimeException("Cannot create discovery service")
             }
         }
-        discovery.publish(record) { ar: AsyncResult<Record> ->
-            if (ar.succeeded()) {
-                registeredRecords.add(record)
-            }
-            completionHandler.handle(ar.map(null as Void?))
+        val record = discovery.publishAwait(record)
+        if(record != null){
+            registeredRecords.add(record)
         }
     }
 

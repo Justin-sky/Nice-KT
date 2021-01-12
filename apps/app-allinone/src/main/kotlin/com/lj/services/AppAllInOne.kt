@@ -3,7 +3,7 @@ package com.lj.services
 import com.lj.GameServerServiceVerticle
 import kt.scaffold.Application
 
-fun main() {
+suspend fun main() {
 
     //初始化Vertx
     Application.setupVertx()

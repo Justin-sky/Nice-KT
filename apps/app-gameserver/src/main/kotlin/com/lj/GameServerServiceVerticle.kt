@@ -9,7 +9,7 @@ import io.vertx.serviceproxy.ServiceBinder
 import kt.scaffold.common.MicroServiceVerticle
 
 class GameServerServiceVerticle : MicroServiceVerticle() {
-    override fun start() {
+    override suspend fun start() {
         super.start()
 
         val service = GameServerServiceImpl()
@@ -23,14 +23,7 @@ class GameServerServiceVerticle : MicroServiceVerticle() {
             EventBusAddress.SERVICE_GAMESERVER_NAME,
             EventBusAddress.SERVICE_GAMESERVER_ADDRESS,
             GameServerService::class.java,
-            meta,
-            Handler {ar->
-                if(ar.failed()){
-                    ar.cause().printStackTrace()
-                }else{
-
-                }
-            })
+            meta)
     }
 
 }

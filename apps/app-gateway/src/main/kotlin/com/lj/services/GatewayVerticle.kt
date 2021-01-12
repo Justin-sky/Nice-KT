@@ -3,21 +3,19 @@ package com.lj.services
 import com.lj.core.eventBus.EventBusAddress
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
-import io.vertx.core.json.JsonObject
 import io.vertx.core.parsetools.RecordParser
 import io.vertx.kotlin.servicediscovery.getRecordAwait
-import io.vertx.servicediscovery.types.EventBusService
-import io.vertx.serviceproxy.ServiceProxyBuilder
+import io.vertx.kotlin.servicediscovery.getRecordsAwait
 import kt.scaffold.Application
 import kt.scaffold.common.MicroServiceVerticle
 import kt.scaffold.tools.logger.Logger
 import io.vertx.servicediscovery.Record
-import javax.swing.DebugGraphics
-import javax.xml.bind.JAXBElement
+import kotlinx.coroutines.launch
+
 
 class GatewayVerticle :MicroServiceVerticle(){
 
-     override fun start() {
+     override suspend fun start() {
         super.start()
 
         val tcpServerOptions = Application.tcpServerOptions()
@@ -58,15 +56,25 @@ class GatewayVerticle :MicroServiceVerticle(){
 //                }
 
                // discovery.getRecordAwait({r:Record->1000 == r.metadata.getInteger("server_id")})
+                launch{
+                    val serverId = 1000
 
-                discovery.getRecord(
-                    { r: Record ->
-                        1000 == r.metadata.getInteger("server_id")
+                    var record:Record? = null;
+                    if(serverId>0){
+                        record = discovery.getRecordAwait { r:Record ->
+                            1000 == r.metadata.getInteger("server_id")
+                        }
                     }
-                ) { ar ->
-                    if (ar.succeeded()) {
-                        val record = ar.result()
+                    if (record == null){
+                        val records = discovery.getRecordsAwait { r:Record->
+                            r.name.equals(EventBusAddress.SERVICE_GAMESERVER_NAME)
+                        }
+                        if(records!= null && records.size>0){
+                            record = records.shuffled().get(0)
+                        }
+                    }
 
+                    if(record!= null){
                         val reference =  discovery.getReference(record)
                         val service = reference.getAs(GameServerService::class.java)
 
@@ -76,11 +84,8 @@ class GatewayVerticle :MicroServiceVerticle(){
                         })
 
                         reference.release()
-                    } else {
-                        // lookup failed
                     }
                 }
-
 
             }
         }

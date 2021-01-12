@@ -19,7 +19,6 @@ import kt.scaffold.tools.json.toShortJson
 import kt.scaffold.tools.logger.Logger
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
-import java.lang.Exception
 import java.lang.RuntimeException
 import java.lang.management.ManagementFactory
 import java.net.InetAddress
@@ -27,7 +26,8 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager as SpiClusterZookeeperZookeeperClusterManager
-
+import io.vertx.kotlin.core.deployVerticleAwait
+import kotlin.Exception
 
 @Suppress("MemberVisibilityCanBePrivate", "HasPlatformType", "ObjectPropertyName")
 object Application {
@@ -301,11 +301,18 @@ object Application {
         return this
     }
 
-    fun deployVerticle(className:String, verticleName:String){
-        val workerMode = config.getBoolean("app.Verticles.$verticleName.workerMode")
-        val instNum = config.getInt("app.Verticles.$verticleName.instance")
-        vertx.deployVerticle(className,
-            DeploymentOptions().setWorker(workerMode).setInstances(instNum))
+    suspend fun deployVerticle(className:String, verticleName:String){
+        try{
+            val workerMode = config.getBoolean("app.Verticles.$verticleName.workerMode")
+            val instNum = config.getInt("app.Verticles.$verticleName.instance")
+            vertx.deployVerticleAwait(
+                className,
+                DeploymentOptions().setWorker(workerMode).setInstances(instNum)
+            )
+        }catch (e:Exception){
+            Logger.error("Deply verticle $className : $verticleName Exception, ${e.cause}")
+        }
+
     }
 
 
