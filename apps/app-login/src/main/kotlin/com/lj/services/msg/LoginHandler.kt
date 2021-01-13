@@ -4,17 +4,33 @@ import com.lj.core.net.SocketManager
 import com.lj.core.net.msg.BaseHandler
 import com.lj.core.net.msg.Handler
 import com.lj.core.net.msg.Msg
-import com.lj.proto.OpcodeOuterClass
+import com.lj.core.net.msg.Opcode
+import com.lj.proto.Login
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kt.scaffold.tools.logger.Logger
 
-@Handler(opcode = OpcodeOuterClass.Opcode.MSG_C2G_LoginGate_VALUE)
+@Handler(opcode = Opcode.MSG_C2R_Login)
 class LoginHandler: BaseHandler() {
 
-    override suspend fun process(socketId:String, msg: Msg) {
-        Logger.debug("hello....")
+    override  fun process(socketId:String, msg: Msg) {
 
-        var buf = msg.protoStr.toByteArray()
-        SocketManager.sendMsg(socketId, msg.seq, msg.msgId, msg.serverId, buf)
+        GlobalScope.launch {
+            //解析消息
+            var rev = msg.protoStr.toByteArray()
+            var c2r = Login.C2R_Login.parseFrom(rev)
+            Logger.debug("account: ${c2r.account}, passwd: ${c2r.password}")
+
+            //返回消息
+            var builder = Login.R2C_Login.newBuilder()
+            builder.address = "127.0.0.1:9000"
+            builder.key = 123456
+            builder.gateId = 100
+
+            var buf = builder.build().toByteArray()
+
+            SocketManager.sendMsg(socketId, msg.seq, Opcode.MSG_R2C_Login, msg.serverId, msg.serverType, buf)
+
+        }
     }
-
 }

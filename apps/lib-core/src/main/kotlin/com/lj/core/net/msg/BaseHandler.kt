@@ -1,5 +1,5 @@
 package com.lj.core.net.msg
 
 abstract class BaseHandler{
-    abstract suspend fun process(socketId:String, msg:Msg);
+    abstract  fun process(socketId:String, msg:Msg);
 }

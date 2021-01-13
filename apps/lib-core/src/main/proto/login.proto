@@ -1,6 +1,6 @@
 syntax = "proto3";
-package com.lj.proto;
-
+package nice_ts;
+option java_package = "com.lj.proto";
 
 message C2R_Login // IRequest
 {

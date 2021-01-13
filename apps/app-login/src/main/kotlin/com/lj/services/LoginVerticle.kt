@@ -1,6 +1,7 @@
 package com.lj.services
 
 import com.lj.core.net.SocketManager
+import com.lj.core.net.msg.MessageDispatcher
 import kt.scaffold.Application
 import kt.scaffold.common.MicroServiceVerticle
 import kt.scaffold.tools.logger.Logger
@@ -10,20 +11,21 @@ class LoginVerticle:MicroServiceVerticle(){
     override suspend fun start() {
         super.start()
 
+        //注册消息处理器
+        MessageDispatcher.initialize("com.lj.services.msg")
+
         val tcpServerOptions = Application.tcpServerOptions()
         val tcpServer = this.vertx.createNetServer(tcpServerOptions)
-
 
         tcpServer.connectHandler(){ socket ->
             Logger.debug("Connect ， ${socket.writeHandlerID()}... ${socket.remoteAddress()} ")
             val socketId = socket.writeHandlerID()
             Logger.debug("Socket ID: $socketId")
+
             SocketManager.socketMap.put(socketId,socket)
             SocketManager.activeSocketMap.put(socketId,System.currentTimeMillis())
 
-
             socket.handler(SocketManager.socketHandler(socketId))
-
         }
 
         tcpServer.exceptionHandler(){

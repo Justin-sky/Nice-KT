@@ -7,14 +7,14 @@ import java.lang.RuntimeException
 
 object MessageDispatcher {
 
-    private val cmdHandlers = mutableMapOf<Int,CmdExecutor>()
+    private val cmdHandlers = mutableMapOf<Short,CmdExecutor>()
 
     fun initialize(packageName:String){
         val messageCommandClasses = ClassScanner.listClassesWithAnnotation(packageName,Handler::class.java)
         for(cls in messageCommandClasses){
             try{
                 val handler = cls.getDeclaredConstructor().newInstance()
-                val method = cls.getMethod("process", Msg::class.java)
+                val method = cls.getMethod("process", String::class.java, Msg::class.java)
                 val msgId = cls.getAnnotation(Handler::class.java).opcode
 
                 var cmdExecutor = cmdHandlers.get(msgId)
@@ -30,7 +30,7 @@ object MessageDispatcher {
     }
 
     fun dispatch(socketId:String, msg:Msg){
-        val cmdExecutor = cmdHandlers.get(msg.msgId)
+        val cmdExecutor: CmdExecutor? = cmdHandlers.get(msg.msgId)
         if(cmdExecutor == null){
             Logger.error("message executor missed, cmd=${msg.msgId}")
             return
