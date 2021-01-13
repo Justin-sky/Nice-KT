@@ -14,6 +14,8 @@
 
 JDK1.8以上， Idea2020.2 最新版经常有右键失灵的Bug
 
+单机运行执行： AppAllInOne.kt
+
 ## 客户端
 https://github.com/Justin-sky/Nice-TS
 
