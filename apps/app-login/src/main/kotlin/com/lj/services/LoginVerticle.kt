@@ -11,9 +11,6 @@ class LoginVerticle:MicroServiceVerticle(){
     override suspend fun start() {
         super.start()
 
-        //注册消息处理器
-        MessageDispatcher.initialize("com.lj.services.msg")
-
         val tcpServerOptions = Application.tcpServerOptions()
         val tcpServer = this.vertx.createNetServer(tcpServerOptions)
 
@@ -26,6 +23,12 @@ class LoginVerticle:MicroServiceVerticle(){
             SocketManager.activeSocketMap.put(socketId,System.currentTimeMillis())
 
             socket.handler(SocketManager.socketHandler(socketId))
+
+            socket.closeHandler(){
+                Logger.debug("socket close: $socketId")
+                SocketManager.socketMap.remove(socketId)
+                SocketManager.activeSocketMap.remove(socketId)
+            }
         }
 
         tcpServer.exceptionHandler(){
@@ -39,19 +42,21 @@ class LoginVerticle:MicroServiceVerticle(){
 
         //心跳检查
         vertx.setPeriodic(1000*30){ t->
-            var iterator = SocketManager.activeSocketMap.entries.iterator();
-            while (iterator.hasNext()){
-                val entry = iterator.next()
-                val time = System.currentTimeMillis() - entry.value
-                if(time > 1000*60){
+            try {
+                var iterator = SocketManager.activeSocketMap.entries.iterator();
+                while (iterator.hasNext()){
+                    val entry = iterator.next()
+                    val time = System.currentTimeMillis() - entry.value
+                    if(time > 1000*60){
 
-                    Logger.debug("SocketId: ${entry.key} clearn")
-                    //从SocketMap删除
-                    SocketManager.socketMap.remove(entry.key)?.close()
-                    //从activeSocketMap删除
-                    iterator.remove()
+                        Logger.debug("SocketId: ${entry.key} clearn")
+                        //从SocketMap删除
+                        SocketManager.socketMap.remove(entry.key)?.close()
+                        //从activeSocketMap删除
+                        iterator.remove()
+                    }
                 }
-            }
+            }catch (e:Exception){}
         }
     }
 }

@@ -1,9 +1,13 @@
 package com.lj.services
 
 import com.lj.GameServerServiceVerticle
+import com.lj.core.net.msg.MessageDispatcher
 import kt.scaffold.Application
 
 suspend fun main() {
+
+    //注册消息处理器
+    MessageDispatcher.initialize("com.lj.services.msg")
 
     //初始化Vertx
     Application.setupVertx()
