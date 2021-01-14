@@ -2,10 +2,10 @@ package com.lj.core.net
 
 import com.lj.core.net.msg.MessageDispatcher
 import com.lj.core.net.msg.Msg
-import com.lj.proto.Login
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.net.NetSocket
 import io.vertx.core.parsetools.RecordParser
+import kt.crypto.encodeBase64
 import kt.scaffold.tools.logger.Logger
 
 object SocketManager {
@@ -40,7 +40,7 @@ object SocketManager {
 
                 val buff = buffer.bytes
                 try {
-                    val msg = Msg(seq, msgId, serverType, serverId, String(buff))
+                    val msg = Msg(seq, msgId, serverType, serverId, buff.encodeBase64())
 
                     if(isGate){
                         //分发到游戏服
@@ -70,7 +70,6 @@ object SocketManager {
      */
     fun sendMsg(socketId:String,seq:Int,msgId:Short, serverId:Short,serverType:Byte, protoBytes:ByteArray){
 
-        val socket:NetSocket? = socketMap.get(socketId)
         try {
             val buffer = Buffer.buffer()
             buffer.appendInt(protoBytes.size + 4 + 2 + 2 + 1)
@@ -79,9 +78,9 @@ object SocketManager {
             buffer.appendShort(serverId)
             buffer.appendByte(serverType)
             buffer.appendBytes(protoBytes)
-            if (socket != null) {
-                socket.write(buffer)
-            }
+
+            socketMap.get(socketId)?.write(buffer)
+
         }catch (e:Exception){
             Logger.error("send msg error，msgID:$msgId, ${e.cause}")
         }

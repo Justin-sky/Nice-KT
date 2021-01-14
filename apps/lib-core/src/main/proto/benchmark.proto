@@ -1,0 +1,18 @@
+
+syntax = "proto3";
+package  nice_ts;
+option java_package = "com.lj.proto";
+
+//游戏服基准测试协议
+message C2GS_Test // IRequest
+{
+    int32	testID	 = 1;
+    string	testName = 2;
+}
+
+message GS2C_Test // IResponse
+{
+    int32 Error = 91;
+    string Message = 92;
+    string testResponse = 1;
+}

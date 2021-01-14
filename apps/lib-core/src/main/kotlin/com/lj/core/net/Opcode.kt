@@ -1,4 +1,4 @@
-package com.lj.core.net.msg
+package com.lj.core.net
 
 object Opcode {
 
@@ -7,4 +7,9 @@ object Opcode {
     const val MSG_C2G_LoginGate:Short = 1002;
     const val MSG_G2C_LoginGate:Short = 1003;
 
+
+
+
+    const val MSG_C2GS_Test:Short = 2001;
+    const val MSG_GS2C_Test:Short = 2002;
 }

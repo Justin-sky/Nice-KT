@@ -1,29 +1,35 @@
 package com.lj
 
 import com.lj.core.eventBus.EventBusAddress
-import com.lj.services.GameServerService
-import com.lj.services.impl.GameServerServiceImpl
-import io.vertx.core.Handler
-import io.vertx.core.json.JsonObject
+import com.lj.services.BenchmarkService
+import com.lj.services.impl.BenchmarkServiceImpl
 import io.vertx.serviceproxy.ServiceBinder
+import kt.scaffold.Application
 import kt.scaffold.common.MicroServiceVerticle
+import kt.scaffold.net.DiscoveryManager
 
 class GameServerServiceVerticle : MicroServiceVerticle() {
     override suspend fun start() {
         super.start()
 
-        val service = GameServerServiceImpl()
+        val serverID = Application.config.getString("app.Verticles.GameServerVerticle.serverID")
+        val serverType = Application.config.getInt("app.Verticles.GameServerVerticle.serverType")
         val binder = ServiceBinder(vertx)
-        binder.setAddress(EventBusAddress.SERVICE_GAMESERVER_ADDRESS).register(GameServerService::class.java,service)
-        //binder.setAddress("com.lj.server").registerLocal(GameServerService::class.java,service)
-
-        val meta = JsonObject()
-        meta.put("server_id",1000)
-        publishEventBusService(
+        //==================此处注册并发布服务
+        binder.setAddress(EventBusAddress.SERVICE_GAMESERVER_ADDRESS).register(BenchmarkService::class.java, BenchmarkServiceImpl())
+        DiscoveryManager.publishEventBusService(
             EventBusAddress.SERVICE_GAMESERVER_NAME,
             EventBusAddress.SERVICE_GAMESERVER_ADDRESS,
-            GameServerService::class.java,
-            meta)
+            BenchmarkService::class.java,
+            serverID.toInt(),
+            serverType.toInt()
+        )
+
+
+        //====================
+
+
+
     }
 
 }

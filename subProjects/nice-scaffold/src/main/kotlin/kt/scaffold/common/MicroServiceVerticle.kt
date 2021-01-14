@@ -1,46 +1,17 @@
 package kt.scaffold.common
 
-import io.vertx.servicediscovery.Record;
-import io.vertx.core.impl.ConcurrentHashSet
-import io.vertx.core.json.JsonObject
-import io.vertx.servicediscovery.ServiceDiscoveryOptions
-import io.vertx.circuitbreaker.CircuitBreaker;
-import io.vertx.circuitbreaker.CircuitBreakerOptions;
-import io.vertx.core.*
-import java.util.ArrayList
-import java.util.function.Consumer
-import io.vertx.core.AsyncResult
-import io.vertx.core.eventbus.Message
+import io.vertx.circuitbreaker.CircuitBreaker
+import io.vertx.circuitbreaker.CircuitBreakerOptions
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.coroutines.awaitEvent
-import io.vertx.kotlin.coroutines.awaitResult
-import io.vertx.kotlin.coroutines.dispatcher
-import io.vertx.kotlin.servicediscovery.publishAwait
-import io.vertx.servicediscovery.ServiceDiscovery
-import io.vertx.servicediscovery.types.MessageSource;
-import java.lang.Exception
-import io.vertx.servicediscovery.types.EventBusService
-import io.vertx.servicediscovery.types.HttpEndpoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kt.scaffold.Application
-import kt.scaffold.tools.logger.Logger
+import kt.scaffold.net.DiscoveryManager
 
 
 open class MicroServiceVerticle :CoroutineVerticle(){
 
-    lateinit var  discovery: ServiceDiscovery ;
     lateinit var  circuitBreaker: CircuitBreaker
-    val registeredRecords = ConcurrentHashSet<Record>()
 
     override suspend fun start() {
-        //init service discovery instance
-        discovery = ServiceDiscovery.create(vertx,
-            ServiceDiscoveryOptions().setBackendConfiguration(JsonObject())
-        )
-
         //init circuit breaker instance
         val cbOptions = Application.circuitBreakerOptions()
 
@@ -55,71 +26,9 @@ open class MicroServiceVerticle :CoroutineVerticle(){
         )
     }
 
-    suspend fun publishHttpEndpoint(name: String, host: String, port: Int) {
-        val record: Record = HttpEndpoint.createRecord(name, host, port, "/")
-        publish(record)
-    }
 
-    suspend fun publishMessageSource(
-        name: String,
-        address: String,
-        contentClass: Class<*>,
-    ) {
-        val record = MessageSource.createRecord(name, address, contentClass)
-        publish(record)
-    }
-
-    suspend fun publishMessageSource(name: String, address: String) {
-        val record: Record = MessageSource.createRecord(name, address)
-        publish(record)
-    }
-
-    suspend fun publishEventBusService(
-        name: String,
-        address: String,
-        serviceClass: Class<*>,
-        metaJson:JsonObject
-    ) {
-        val record = EventBusService.createRecord(name, address, serviceClass, metaJson)
-        publish(record)
-    }
-
-    private suspend fun publish(record: Record) {
-        try {
-            val re = discovery.publishAwait(record)
-            registeredRecords.add(re)
-        }catch (e:Exception){
-            Logger.error("publish error: ${record.name},e:${e.cause}")
-        }
-
-    }
-
-    override fun stop(stopPromise:Promise<Void>) {
-        // In current design, the publisher is responsible for removing the service
-        val futures: MutableList<Promise<Void>> = ArrayList()
-        registeredRecords.forEach(Consumer { record: Record ->
-            val cleanupFuture = Promise.promise<Void>()
-            futures.add(cleanupFuture)
-
-            discovery.unpublish(record.registration){
-                cleanupFuture.complete()
-            }
-        })
-
-        if (futures.isEmpty()) {
-            discovery.close()
-            stopPromise.complete()
-        } else {
-            val composite = CompositeFuture.all(futures.map { it.future() })
-            composite.onComplete(){
-                discovery.close()
-                stopPromise.complete()
-            }
-            composite.onFailure(){
-                discovery.close()
-                stopPromise.fail(it.cause)
-            }
-        }
-
+    override suspend fun stop() {
+        DiscoveryManager.unPublishAll()
+        DiscoveryManager.close()
     }
 }

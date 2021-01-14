@@ -4,10 +4,11 @@ import com.lj.core.net.SocketManager
 import com.lj.core.net.msg.BaseHandler
 import com.lj.core.net.msg.Handler
 import com.lj.core.net.msg.Msg
-import com.lj.core.net.msg.Opcode
+import com.lj.core.net.Opcode
 import com.lj.proto.Login
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kt.crypto.decodeBase64
 import kt.scaffold.tools.logger.Logger
 
 @Handler(opcode = Opcode.MSG_C2R_Login)
@@ -17,7 +18,7 @@ class LoginHandler: BaseHandler() {
 
         GlobalScope.launch {
             //解析消息
-            var rev = msg.protoStr.toByteArray()
+            var rev = msg.base64Msg.decodeBase64()
             var c2r = Login.C2R_Login.parseFrom(rev)
             Logger.debug("account: ${c2r.account}, passwd: ${c2r.password}")
 
@@ -29,7 +30,13 @@ class LoginHandler: BaseHandler() {
 
             var buf = builder.build().toByteArray()
 
-            SocketManager.sendMsg(socketId, msg.seq, Opcode.MSG_R2C_Login, msg.serverId, msg.serverType, buf)
+            SocketManager.sendMsg(
+                socketId,
+                msg.seq,
+                Opcode.MSG_R2C_Login,
+                msg.serverId,
+                msg.serverType,
+                buf)
 
         }
     }

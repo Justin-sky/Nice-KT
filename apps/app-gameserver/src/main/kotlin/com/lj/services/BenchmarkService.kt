@@ -8,11 +8,11 @@ import io.vertx.core.Handler
 
 @VertxGen
 @ProxyGen
-interface GameServerService{
+interface BenchmarkService{
 
-    fun dispatchMsg(
+    fun test(
         msg: Msg,
-        handler:Handler<AsyncResult<String>>
+        handler: Handler<AsyncResult<Msg>>
     )
 
 
