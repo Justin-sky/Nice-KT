@@ -6,7 +6,6 @@ plugins {
     idea
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
     kotlin("jvm")
-    kotlin("kapt")
 
     application
 }
@@ -17,8 +16,6 @@ dependencies {
     //api(files("conf"))
     api(project(":apps:lib-core"))
 
-    kapt("io.vertx:vertx-codegen:3.9.4:processor")
-    compileOnly("io.vertx:vertx-codegen:3.9.4")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -29,10 +26,6 @@ dependencies {
     configurations.all {
         this.exclude(group = "org.slf4j", module = "slf4j-log4j12")
     }
-
-}
-
-kapt{
 
 }
 

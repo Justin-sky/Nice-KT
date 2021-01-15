@@ -93,13 +93,20 @@ object DiscoveryManager {
         val records = discovery.getRecordsAwait { r:Record ->
             r.metadata.getInteger("server_type") == serverType
         }
-        return records.shuffled()[0]
+        if(records.isNotEmpty()){
+            return records.shuffled()[0]
+        }
+       return null;
     }
 
     suspend fun getReference(serverID:Int, serverType:Int): ServiceReference?{
         val record = getServerRecord(serverID, serverType)
         val reference = discovery.getReference(record)
         return  reference
+    }
+
+    fun getReference(record:Record):ServiceReference{
+        return discovery.getReference(record)
     }
 
     fun close(){

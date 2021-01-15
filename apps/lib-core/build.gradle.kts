@@ -1,10 +1,12 @@
 import com.google.protobuf.gradle.*
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     java
     idea
     id("com.google.protobuf") version "0.8.8"
     kotlin("jvm")
+    kotlin("kapt")
 }
 
 repositories {
@@ -13,10 +15,13 @@ repositories {
 
 val protobufVersion = "3.11.3"
 val vertxVersion = "3.9.4"
+
 dependencies {
+
+
     api(project(":subProjects:nice-scaffold"))
-    api("io.vertx:vertx-codegen:3.9.4")
-    api("io.vertx:vertx-lang-kotlin-gen:3.9.4")
+    api("io.vertx:vertx-codegen:$vertxVersion")
+    api("io.vertx:vertx-lang-kotlin-gen:$vertxVersion")
     api("io.vertx:vertx-service-proxy:$vertxVersion")
     api("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
     api("com.google.protobuf:protobuf-java:$protobufVersion")
@@ -24,12 +29,17 @@ dependencies {
     // android gradle依赖：implementation 和compile的区别
     // 参考: https://www.jianshu.com/p/f34c179bc9d0 根据需要选择使用不同的依赖设定方式
 
+    kapt("io.vertx:vertx-codegen:3.9.4:processor")
+    compileOnly("io.vertx:vertx-codegen:3.9.4")
+
+
     configurations.all {
         this.exclude(group = "org.slf4j", module = "slf4j-log4j12")
     }
 
     api("com.google.protobuf:protobuf-gradle-plugin:0.8.14")
 }
+
 
 tasks.register<Jar>("sourcesJar") {
     from(sourceSets.main.get().allSource)

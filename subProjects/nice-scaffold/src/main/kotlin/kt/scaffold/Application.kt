@@ -220,9 +220,8 @@ object Application {
     fun circuitBreakerOptions():JsonObject{
         val cbCfg = config.getConfig("app.vertx.circuitBreaker")
         val cfgMap = cbCfg.root().map { Pair<String, Any>(it.key, it.value.unwrapped()) }.toMap().toMutableMap()
-        val cbOptionJson = JsonObject(cfgMap)?: JsonObject()
 
-        return cbOptionJson;
+        return JsonObject(cfgMap);
     }
 
     fun setupOnStartAndOnStop(){

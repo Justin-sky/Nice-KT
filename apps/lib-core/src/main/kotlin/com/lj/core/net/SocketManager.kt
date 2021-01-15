@@ -1,11 +1,17 @@
 package com.lj.core.net
 
 import com.lj.core.net.msg.MessageDispatcher
-import com.lj.core.net.msg.Msg
+import com.lj.core.service.GameService
+import com.lj.core.service.Msg
+import com.lj.core.service.kotlin.dispatchAwait
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.net.NetSocket
 import io.vertx.core.parsetools.RecordParser
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kt.crypto.decodeBase64
 import kt.crypto.encodeBase64
+import kt.scaffold.net.DiscoveryManager
 import kt.scaffold.tools.logger.Logger
 
 object SocketManager {
@@ -13,7 +19,7 @@ object SocketManager {
     val activeSocketMap = mutableMapOf<String,Long>()
 
 
-     fun socketHandler(socketId:String,isGate:Boolean = false):RecordParser{
+     fun socketHandler(socketId:String,isGate:Boolean=false):RecordParser{
         val headLen = 4 + 4 + 2 + 2 + 1
         val parser = RecordParser.newFixed(headLen)
 
@@ -37,20 +43,51 @@ object SocketManager {
 
                 parser.fixedSizeMode(size - headLen + 4)
             }else{
-
-                val buff = buffer.bytes
                 try {
-                    val msg = Msg(seq, msgId, serverType, serverId, buff.encodeBase64())
+                    //分发 Service进程
+                    GlobalScope.launch {
+                        val buff = buffer.bytes
+                        val msg = Msg(
+                            seq,
+                            msgId,
+                            serverType,
+                            serverId,
+                            buff.encodeBase64()
+                        )
+                        if(isGate){
+                                var record = DiscoveryManager.getServerRecord(serverId.toInt(),serverType.toInt())
+                                if(record == null){
+                                    record = DiscoveryManager.chooseServerRecord(serverType.toInt())
+                                }else{
+                                    Logger.debug("gate dispatch error..$msgId,$serverId,$serverType")
+                                }
+                                if(record!=null){
+                                    msg.serverId = record.metadata.getInteger("server_id").toShort()
+                                    msg.serverType = record.metadata.getInteger("server_type").toByte()
+                                    Logger.debug("gate get new servers: serverID:${msg.serverId}, servertype:${msg.serverType}")
 
-                    if(isGate){
-                        //分发到游戏服
+                                    var reference = DiscoveryManager.getReference(record)
+                                    if (reference!= null){
+                                        val service = reference.getAs(GameService::class.java)
+
+                                        val msgResp = service.dispatchAwait(msg)
+
+                                        //Logger.debug("handler: $socketId, ${msgResp.msgId}")
+                                        sendMsg(
+                                            socketId,
+                                            msgResp.seq,
+                                            msgResp.msgId,
+                                            msgResp.serverId,
+                                            msgResp.serverType,
+                                            msgResp.base64Msg.decodeBase64())
+                                    }
+                                }
 
 
-                    }else{
-                        //Login 服，直接处理
-                        MessageDispatcher.dispatch(socketId,msg)
+                        }else{
+                            MessageDispatcher.dispatch(socketId, msg)
+                        }
                     }
-
                 }catch (e:Exception){
                     Logger.error("message eror: $seq,$msgId,$serverType,$serverId,${e.cause}")
                 }
