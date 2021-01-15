@@ -19,7 +19,7 @@ class BenchmarkHandler: BaseHandler() {
     override fun process(msg: Msg,handler: Handler<AsyncResult<Msg>>) {
         //收到的消息
         val c2gs = Benchmark.C2GS_Test.parseFrom(msg.base64Msg.decodeBase64())
-        Logger.debug("benchark recv: ${c2gs.testID} - ${c2gs.testName}")
+        Logger.debug("benchark recv: ${c2gs.testID} - ${c2gs.testName} - ${msg.seq}")
 
         //发出的消息
         val builder = Benchmark.GS2C_Test.newBuilder()

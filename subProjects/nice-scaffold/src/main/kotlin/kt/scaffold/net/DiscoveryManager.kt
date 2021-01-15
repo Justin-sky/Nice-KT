@@ -31,24 +31,24 @@ object DiscoveryManager {
 
     suspend fun publishHttpEndpoint(name: String, host: String, port: Int) {
         val record: Record = HttpEndpoint.createRecord(name, host, port, "/")
-        publish(record)
+        publishAwait(record)
     }
 
-    suspend fun publishMessageSource(
+    suspend fun publishMessageSourceAwait(
         name: String,
         address: String,
         contentClass: Class<*>,
     ) {
         val record = MessageSource.createRecord(name, address, contentClass)
-        publish(record)
+        publishAwait(record)
     }
 
-    suspend fun publishMessageSource(name: String, address: String) {
+    suspend fun publishMessageSourceAwait(name: String, address: String) {
         val record: Record = MessageSource.createRecord(name, address)
-        publish(record)
+        publishAwait(record)
     }
 
-    suspend fun publishEventBusService(
+    suspend fun publishEventBusServiceAwait(
         name: String,
         address: String,
         serviceClass: Class<*>,
@@ -61,10 +61,10 @@ object DiscoveryManager {
         meta.put("server_type",serverType) //1 Game Server
 
         val record = EventBusService.createRecord(name, address, serviceClass, meta)
-        publish(record)
+        publishAwait(record)
     }
 
-    private suspend fun publish(record: Record) {
+    private suspend fun publishAwait(record: Record) {
         try {
             val re = discovery.publishAwait(record)
             registeredRecords.add(re)
@@ -82,14 +82,14 @@ object DiscoveryManager {
         })
     }
 
-    suspend fun getServerRecord(serverID:Int, serverType:Int): Record?{
+    suspend fun getServerRecordAwait(serverID:Int, serverType:Int): Record?{
         return discovery.getRecordAwait { r:Record ->
             r.metadata.getInteger("server_id") == serverID &&
             r.metadata.getInteger(("server_type")) == serverType
         };
     }
 
-    suspend fun chooseServerRecord(serverType: Int):Record?{
+    suspend fun chooseServerRecordAwait(serverType: Int):Record?{
         val records = discovery.getRecordsAwait { r:Record ->
             r.metadata.getInteger("server_type") == serverType
         }
@@ -99,13 +99,13 @@ object DiscoveryManager {
        return null;
     }
 
-    suspend fun getReference(serverID:Int, serverType:Int): ServiceReference?{
-        val record = getServerRecord(serverID, serverType)
+    suspend fun getReferenceAwait(serverID:Int, serverType:Int): ServiceReference?{
+        val record = getServerRecordAwait(serverID, serverType)
         val reference = discovery.getReference(record)
         return  reference
     }
 
-    fun getReference(record:Record):ServiceReference{
+    fun getReferenceAwait(record:Record):ServiceReference{
         return discovery.getReference(record)
     }
 

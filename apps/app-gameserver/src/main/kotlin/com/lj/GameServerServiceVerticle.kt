@@ -19,7 +19,7 @@ class GameServerServiceVerticle : MicroServiceVerticle() {
         binder.setAddress(EventBusAddress.SERVICE_GAMESERVER_ADDRESS).register(GameService::class.java,
             GameServiceImpl()
         )
-        DiscoveryManager.publishEventBusService(
+        DiscoveryManager.publishEventBusServiceAwait(
             EventBusAddress.SERVICE_GAMESERVER_NAME,
             EventBusAddress.SERVICE_GAMESERVER_ADDRESS,
             GameService::class.java,

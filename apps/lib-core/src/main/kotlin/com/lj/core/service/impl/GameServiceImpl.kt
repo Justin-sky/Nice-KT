@@ -6,6 +6,7 @@ import com.lj.core.service.handler.ServiceDispatcher
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 

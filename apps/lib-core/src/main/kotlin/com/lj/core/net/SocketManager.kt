@@ -4,6 +4,7 @@ import com.lj.core.net.msg.MessageDispatcher
 import com.lj.core.service.GameService
 import com.lj.core.service.Msg
 import com.lj.core.service.kotlin.dispatchAwait
+import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.net.NetSocket
 import io.vertx.core.parsetools.RecordParser
@@ -40,53 +41,22 @@ object SocketManager {
                 msgId = buffer.getShort(0 + 4 + 4)
                 serverId = buffer.getShort(0 + 4 + 4 + 2)
                 serverType = buffer.getByte(0 + 4 + 4 +2 + 2)
-
                 parser.fixedSizeMode(size - headLen + 4)
             }else{
                 try {
                     //分发 Service进程
-                    GlobalScope.launch {
-                        val buff = buffer.bytes
-                        val msg = Msg(
-                            seq,
-                            msgId,
-                            serverType,
-                            serverId,
-                            buff.encodeBase64()
-                        )
-                        if(isGate){
-                                var record = DiscoveryManager.getServerRecord(serverId.toInt(),serverType.toInt())
-                                if(record == null){
-                                    record = DiscoveryManager.chooseServerRecord(serverType.toInt())
-                                }else{
-                                    Logger.debug("gate dispatch error..$msgId,$serverId,$serverType")
-                                }
-                                if(record!=null){
-                                    msg.serverId = record.metadata.getInteger("server_id").toShort()
-                                    msg.serverType = record.metadata.getInteger("server_type").toByte()
-                                    Logger.debug("gate get new servers: serverID:${msg.serverId}, servertype:${msg.serverType}")
-
-                                    var reference = DiscoveryManager.getReference(record)
-                                    if (reference!= null){
-                                        val service = reference.getAs(GameService::class.java)
-
-                                        val msgResp = service.dispatchAwait(msg)
-
-                                        //Logger.debug("handler: $socketId, ${msgResp.msgId}")
-                                        sendMsg(
-                                            socketId,
-                                            msgResp.seq,
-                                            msgResp.msgId,
-                                            msgResp.serverId,
-                                            msgResp.serverType,
-                                            msgResp.base64Msg.decodeBase64())
-                                    }
-                                }
-
-
-                        }else{
-                            MessageDispatcher.dispatch(socketId, msg)
-                        }
+                    val buff = buffer.bytes
+                    val msg = Msg(
+                        seq,
+                        msgId,
+                        serverType,
+                        serverId,
+                        buff.encodeBase64()
+                    )
+                    if(isGate){
+                        MessageDispatcher.dispatchService(socketId,serverId.toInt(),serverType.toInt(),msg)
+                    }else{
+                        MessageDispatcher.dispatch(socketId, msg)
                     }
                 }catch (e:Exception){
                     Logger.error("message eror: $seq,$msgId,$serverType,$serverId,${e.cause}")
