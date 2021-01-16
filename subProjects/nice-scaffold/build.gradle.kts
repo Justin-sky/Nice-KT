@@ -31,6 +31,7 @@ dependencies {
     api(group = "io.netty", name = "netty-transport-native-epoll", version = "4.1.48.Final", classifier = "linux-x86_64")
     api(group = "io.netty", name = "netty-transport-native-kqueue", version = "4.1.48.Final", classifier = "osx-x86_64")
 
+    api("com.github.ben-manes.caffeine:caffeine:2.8.8")
     api("org.apache.commons:commons-pool2:2.6.2")
     api("com.google.guava:guava:28.2-jre")
     api("org.kodein.di:kodein-di-generic-jvm:6.5.1")

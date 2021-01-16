@@ -1,74 +1,31 @@
 package kt.scaffold.cache
 
-import io.vertx.core.json.JsonObject
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.CacheLoader
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.google.common.graph.Graph
+import io.vertx.redis.client.Redis
+import io.vertx.redis.client.RedisOptions
 import kt.scaffold.Application
-import kt.scaffold.tools.KtException
-import kt.scaffold.tools.json.toShortJson
+import kt.scaffold.redis.RedisManager
+import java.util.concurrent.TimeUnit
 
-
+/**
+ * 基于Caffeine 缓存管理
+ */
 object CacheManager {
 
-    private val cacheApiMap = mutableMapOf<String, CacheApi>()
 
-    private val asyncCacheApiMap = mutableMapOf<String, AsyncCacheApi>()
+    fun <Key,Graph> createCache(name: Key):Cache<Key,Graph>{
 
-    /**
-     * get cache instence by cache name.
-     */
-    fun cache(cacheName: String): CacheApi {
-        return cacheApiMap[cacheName] ?: createCache(cacheName)
+        val cache = Caffeine.newBuilder()
+            .maximumSize(1000)
+            .expireAfterAccess(10,TimeUnit.SECONDS)
+            .build<Key, Graph>();
+        return cache
     }
 
-    /**
-     * get async cache instence by cache name.
-     */
-    fun asyncCache(cacheName: String): AsyncCacheApi {
-        return asyncCacheApiMap[cacheName] ?: createAsyncCache(cacheName)
-    }
 
-    @Synchronized
-    private fun createCache(cacheName: String): CacheApi {
-        return cacheApiMap.getOrPut(cacheName) {
-            val options = cacheOptionsOf(cacheName)
-            factoryOf(cacheName).createCache(options)
-        }
-    }
 
-    @Synchronized
-    private fun createAsyncCache(cacheName: String): AsyncCacheApi {
-        return asyncCacheApiMap.getOrPut(cacheName) {
-            val options = cacheOptionsOf(cacheName)
-            factoryOf(cacheName).createAsyncCache(options)
-        }
-    }
 
-    private fun factoryOf(cacheName: String): CacheFactory {
-        checkCacheName(cacheName)
-
-        val cfgPath = "app.cache.configs.${cacheName}.factory"
-        if (Application.config.hasPath(cfgPath).not()) {
-            throw KtException("Please check application.conf to make sure that the \"factory\" class of the specified cache [$cacheName] is set correctly.")
-        }
-        val factoryClassName = Application.config.getString(cfgPath)
-        val factoryClass = Application.classLoader.loadClass(factoryClassName)
-        return factoryClass.getDeclaredConstructor().newInstance() as CacheFactory
-    }
-
-    private fun cacheOptionsOf(cacheName: String): JsonObject {
-        checkCacheName(cacheName)
-
-        val cfgPath = "app.cache.configs.${cacheName}.options"
-        if (Application.config.hasPath(cfgPath).not()) {
-            throw KtException("Please check application.conf to make sure that the options of the specified cache [$cacheName] is set correctly.")
-        }
-        val optionsJson = Application.config.getConfig(cfgPath).root().unwrapped().toShortJson()
-        return JsonObject(optionsJson)
-    }
-
-    private fun checkCacheName(cacheName: String) {
-        val cfgPath = "app.cache.configs.${cacheName}"
-        if (Application.config.hasPath(cfgPath).not()) {
-            throw KtException("Please check application.conf, the name of cache: [$cacheName] does not exists.")
-        }
-    }
 }
