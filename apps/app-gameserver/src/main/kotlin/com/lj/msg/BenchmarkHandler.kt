@@ -1,7 +1,9 @@
 package com.lj.msg
 
 import com.lj.core.common.ServiceHandlerAnnotation
+import com.lj.core.eventBus.EventBusAddress
 import com.lj.core.net.Opcode
+import com.lj.core.net.SocketManager
 import com.lj.core.service.Msg
 import com.lj.core.service.handler.BaseHandler
 import com.lj.proto.Benchmark
@@ -21,6 +23,7 @@ class BenchmarkHandler: BaseHandler() {
         val c2gs = Benchmark.C2GS_Test.parseFrom(msg.base64Msg.decodeBase64())
         Logger.debug("benchark recv: ${c2gs.testID} - ${c2gs.testName} - ${msg.seq}")
 
+
         //发出的消息
         val builder = Benchmark.GS2C_Test.newBuilder()
         builder.setError(0)
@@ -30,6 +33,13 @@ class BenchmarkHandler: BaseHandler() {
         val gs2c = builder.build().toByteArray().encodeBase64()
         msg.base64Msg = gs2c
         msg.msgId = Opcode.MSG_GS2C_Test
+
+        msg.userId = 991
+
+        //推送消息
+        SocketManager.sendMsg2Gateway(EventBusAddress.PUSH2CLIENT_ADDRESS,msg)
+
+
 
         handler.handle(Future.succeededFuture(msg))
     }

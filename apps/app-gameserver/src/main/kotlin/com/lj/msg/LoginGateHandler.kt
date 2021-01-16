@@ -33,6 +33,9 @@ class LoginGateHandler: BaseHandler() {
         msg.msgId = Opcode.MSG_G2C_LoginGate
         msg.base64Msg = buf.encodeBase64()
 
+        //登录到服务器后，发用户ID返回
+        msg.userId = 991
+
         handler.handle(Future.succeededFuture(msg))
 
     }

@@ -19,16 +19,18 @@ class GatewayVerticle :MicroServiceVerticle(){
 
             val socketId = socket.writeHandlerID()
             Logger.debug("Socket ID: $socketId")
-            SocketManager.socketMap.put(socketId,socket)
-            SocketManager.activeSocketMap.put(socketId,System.currentTimeMillis())
+
+            //保存Socket
+            SocketManager.activeSocket(socketId, socket)
 
             //网关消息处理
             socket.handler(SocketManager.socketHandler(socketId, true))
 
             socket.closeHandler(){
                 Logger.debug("socket close: $socketId")
-                SocketManager.socketMap.remove(socketId)
-                SocketManager.activeSocketMap.remove(socketId)
+
+                SocketManager.inactiveSocket(socketId)
+                SocketManager.unbindUserid2Socket(socketId)
             }
         }
 
@@ -41,24 +43,5 @@ class GatewayVerticle :MicroServiceVerticle(){
         tcpServer.listen(port,host)
         Logger.info("GateWay Server listen: $host: $port")
 
-         //心跳检查
-         vertx.setPeriodic(1000*30){ t->
-             try{
-                 var iterator = SocketManager.activeSocketMap.entries.iterator();
-                 while (iterator.hasNext()){
-                     val entry = iterator.next()
-                     val time = System.currentTimeMillis() - entry.value
-                     if(time > 1000*60){
-
-                         Logger.debug("SocketId: ${entry.key} clearn")
-                         //从SocketMap删除
-                         SocketManager.socketMap.remove(entry.key)?.close()
-                         //从activeSocketMap删除
-                         iterator.remove()
-                     }
-                 }
-             }catch (e:Exception){}
-
-         }
     }
 }

@@ -1,24 +1,68 @@
 package com.lj.core.net
 
 import com.lj.core.net.msg.MessageDispatcher
+import com.lj.core.net.msg.MsgMessageCodec
 import com.lj.core.service.GameService
 import com.lj.core.service.Msg
 import com.lj.core.service.kotlin.dispatchAwait
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
+import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.net.NetSocket
 import io.vertx.core.parsetools.RecordParser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kt.crypto.decodeBase64
 import kt.crypto.encodeBase64
+import kt.scaffold.Application
 import kt.scaffold.net.DiscoveryManager
 import kt.scaffold.tools.logger.Logger
 
 object SocketManager {
-    val socketMap = mutableMapOf<String, NetSocket>()
-    val activeSocketMap = mutableMapOf<String,Long>()
+    private val socketMap = mutableMapOf<String, NetSocket>()
+    private val activeSocketMap = mutableMapOf<String,Long>()
+    private val useridSocketMap = mutableMapOf<Long,String>()
+    private val socketUseridMap = mutableMapOf<String, Long>()
 
+    fun activeSocket(socketId: String, socket: NetSocket){
+        this.socketMap.put(socketId,socket)
+        this.activeSocketMap.put(socketId,System.currentTimeMillis())
+    }
+
+    fun inactiveSocket(socketId: String){
+        socketMap.remove(socketId)
+        activeSocketMap.remove(socketId)
+    }
+
+    fun  bindUserid2Socket(userid:Long, socketId:String){
+        this.useridSocketMap[userid] = socketId
+        this.socketUseridMap[socketId] = userid
+    }
+
+    fun unbindUserid2Socket(socketId: String){
+        val userid = this.socketUseridMap[socketId]
+        this.useridSocketMap.remove(userid)
+        this.socketUseridMap.remove(socketId)
+    }
+
+    fun checkTimeout(timeOut:Int){
+        try{
+            var iterator = activeSocketMap.entries.iterator();
+            while (iterator.hasNext()){
+                val entry = iterator.next()
+                val time = System.currentTimeMillis() - entry.value
+                if(time > timeOut){
+
+                    Logger.debug("SocketId: ${entry.key} clearn")
+                    unbindUserid2Socket(entry.key)
+                    //从SocketMap删除
+                    socketMap.remove(entry.key)?.close()
+                    //从activeSocketMap删除
+                    iterator.remove()
+                }
+            }
+        }catch (e:Exception){}
+    }
 
      fun socketHandler(socketId:String,isGate:Boolean=false):RecordParser{
         val headLen = 4 + 4 + 2 + 2 + 1
@@ -51,6 +95,7 @@ object SocketManager {
                         msgId,
                         serverType,
                         serverId,
+                        -1,
                         buff.encodeBase64()
                     )
                     if(isGate){
@@ -91,5 +136,26 @@ object SocketManager {
         }catch (e:Exception){
             Logger.error("send msg error，msgID:$msgId, ${e.cause}")
         }
+    }
+
+    fun pushMsg2Client(userid: Long, msg:Msg){
+        val socketId = this.useridSocketMap[userid]
+        if(socketId!=null){
+            sendMsg(socketId,msg.seq, msg.msgId, msg.serverId, msg.serverType,msg.base64Msg.decodeBase64())
+        }else{
+            Logger.debug("push msg failed, $userid offline...")
+        }
+    }
+
+    fun sendMsg2Gateway(address:String, msg: Msg){
+        val eventBus = Application.vertx.eventBus()
+
+        eventBus.send(address,msg)
+    }
+
+    fun publish2Gateway(address: String,msg: Msg){
+        val eventBus = Application.vertx.eventBus()
+
+        eventBus.publish(address,msg)
     }
 }

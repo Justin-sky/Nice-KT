@@ -31,7 +31,6 @@ public class ClassScanner {
      * 扫描目录下的所有class文件
      *
      * @param scanPackage 搜索的包根路径
-     * @return
      */
     public static Set<Class<?>> getClasses(String scanPackage) {
         return getClasses(scanPackage, EMPTY_FILTER);
@@ -42,7 +41,6 @@ public class ClassScanner {
      *
      * @param scanPackage 搜索的包根路径
      * @param parent
-     * @return
      */
     public static Set<Class<?>> listAllSubclasses(String scanPackage, Class<?> parent) {
         return getClasses(scanPackage, (clazz) -> {
@@ -55,7 +53,6 @@ public class ClassScanner {
      *
      * @param scanPackage 搜索的包根路径
      * @param annotation
-     * @return
      */
     public static <A extends Annotation> Set<Class<?>> listClassesWithAnnotation(String scanPackage,
                                                                                  Class<A> annotation) {
@@ -67,7 +64,6 @@ public class ClassScanner {
      *
      * @param pack   包路径
      * @param filter 自定义类过滤器
-     * @return
      */
     public static Set<Class<?>> getClasses(String pack, Predicate<Class<?>> filter) {
         Set<Class<?>> result = new LinkedHashSet<Class<?>>();

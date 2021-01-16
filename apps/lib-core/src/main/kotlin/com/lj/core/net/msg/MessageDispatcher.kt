@@ -2,6 +2,7 @@ package com.lj.core.net.msg
 
 import com.lj.core.common.CmdExecutor
 import com.lj.core.common.HandlerAnnotation
+import com.lj.core.net.Opcode
 import com.lj.core.net.SocketManager
 import com.lj.core.service.GameService
 import com.lj.core.service.Msg
@@ -27,11 +28,11 @@ object MessageDispatcher {
                 val method = cls.getMethod("process",String::class.java, Msg::class.java)
                 val msgId = cls.getAnnotation(HandlerAnnotation::class.java).opcode
 
-                var cmdExecutor = cmdHandlers.get(msgId)
+                var cmdExecutor = cmdHandlers[msgId]
                 if (cmdExecutor!=null) throw RuntimeException("cmd[$msgId] duplicated")
 
-                cmdExecutor = CmdExecutor(method, handler as Object)
-                cmdHandlers.put(msgId, cmdExecutor)
+                cmdExecutor = CmdExecutor(method, handler as Any)
+                cmdHandlers[msgId] = cmdExecutor
 
             }catch (e:Exception){
                 Logger.error("initialize error: ${e.cause}")
@@ -40,7 +41,7 @@ object MessageDispatcher {
     }
 
     fun dispatch(socketId:String, msg: Msg){
-        val cmdExecutor: CmdExecutor? = cmdHandlers.get(msg.msgId)
+        val cmdExecutor: CmdExecutor? = cmdHandlers[msg.msgId]
         if(cmdExecutor == null){
             Logger.error("message executor missed, cmd=${msg.msgId}")
             return
@@ -58,26 +59,29 @@ object MessageDispatcher {
             var record = DiscoveryManager.getServerRecordAwait(serverId,serverType)
             if(record == null){
                 Logger.debug("gate dispatch error..${msg.msgId},$serverId,$serverType")
-                record = DiscoveryManager.chooseServerRecordAwait(serverType.toInt())
+                record = DiscoveryManager.chooseServerRecordAwait(serverType)
             }
             if(record!=null){
                 msg.serverId = record.metadata.getInteger("server_id").toShort()
                 msg.serverType = record.metadata.getInteger("server_type").toByte()
-                //Logger.debug("gate get new servers: serverID:${msg.serverId}, servertype:${msg.serverType}")
 
-                var reference = DiscoveryManager.getReferenceAwait(record)
-                if (reference!= null){
-                    val service = reference.getAs(GameService::class.java)
-                    val msgResp = service.dispatchAwait(msg)
-                    SocketManager.sendMsg(
-                        socketId,
-                        msgResp.seq,
-                        msgResp.msgId,
-                        msgResp.serverId,
-                        msgResp.serverType,
-                        msgResp.base64Msg.decodeBase64()
-                    )
+                val reference = DiscoveryManager.getReferenceAwait(record)
+                val service = reference.getAs(GameService::class.java)
+                val msgResp = service.dispatchAwait(msg)
+
+                if(msgResp.msgId == Opcode.MSG_G2C_LoginGate && msgResp.userId >0 ){
+                    //绑定用户ID 和Socket ID
+                    SocketManager.bindUserid2Socket(msgResp.userId,socketId)
                 }
+                SocketManager.sendMsg(
+                    socketId,
+                    msgResp.seq,
+                    msgResp.msgId,
+                    msgResp.serverId,
+                    msgResp.serverType,
+                    msgResp.base64Msg.decodeBase64()
+                )
+
             }
         }
 
