@@ -6,13 +6,15 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.lj.core.ecs.component.AccountComponent
 import com.lj.core.ecs.component.BagComponent
+import com.lj.core.ecs.component.TeamComponent
 import com.lj.core.ecs.entity.PlayerEntity
 import io.vertx.core.json.JsonObject
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,property = "@class")
 @JsonSubTypes(
     JsonSubTypes.Type(value = AccountComponent::class, name = "account"),
-    JsonSubTypes.Type(value = BagComponent::class, name = "bag")
+    JsonSubTypes.Type(value = BagComponent::class, name = "bag"),
+    JsonSubTypes.Type(value = TeamComponent::class, name = "team")
 )
 open abstract class Component {
     var _id:Long = 1

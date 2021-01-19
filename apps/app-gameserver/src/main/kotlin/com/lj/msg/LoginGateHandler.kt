@@ -6,6 +6,7 @@ import com.lj.core.ecs.EntityFactory
 import com.lj.core.ecs.component.AccountComponent
 import com.lj.core.ecs.component.BagComponent
 import com.lj.core.ecs.component.Card
+import com.lj.core.ecs.component.TeamComponent
 import com.lj.core.ecs.entity.PlayerEntity
 import com.lj.core.net.Opcode
 import com.lj.core.service.Msg
@@ -62,8 +63,10 @@ class LoginGateHandler: BaseHandler() {
             }else{
                 val bag = user.getComponent<BagComponent>() as BagComponent
                 bag.addCard(Card(3,"card3",3,3))
-                DBEntityManager.updateEntity2DBAwait(user)
+              //  DBEntityManager.updateEntity2DBAwait(user)
 
+               // user.addComponent<TeamComponent>(true)
+               // DBEntityManager.updateComponent2DBAwait(user)
             }
             Logger.debug(user.toString())
 

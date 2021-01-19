@@ -56,5 +56,16 @@ object DBEntityManager {
 
     }
 
+    suspend fun updateComponent2DBAwait(entity: Entity){
+
+        val q = JsonObject().put("_id",entity._id)
+        val componentJson = entity.updateComponentJson
+
+        if(!componentJson.isEmpty) {
+            gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$set", componentJson))
+            componentJson.clear()
+        }
+    }
+
 
 }

@@ -1,8 +1,10 @@
 package com.lj.core.ecs
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.lj.core.ecs.entity.PlayerEntity
+import io.vertx.core.json.JsonObject
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,property = "@class")
 @JsonSubTypes(
@@ -15,7 +17,10 @@ open abstract class Entity {
 
     val components = mutableMapOf<Any, Component>()
 
-    inline fun <reified T> addComponent():T where T:Component{
+    @JsonIgnore
+    val updateComponentJson:JsonObject = JsonObject()
+
+    inline fun <reified T> addComponent(saveDb:Boolean = false):T where T:Component{
         val clz = T::class.java
         var mCreate = clz.getDeclaredConstructor()
         mCreate.isAccessible = true
@@ -25,6 +30,10 @@ open abstract class Entity {
         c.setup()
 
         this.components[clz.simpleName] = c;
+
+        if (saveDb){
+            updateComponentJson.put("components.${clz.simpleName}",JsonObject.mapFrom(c))
+        }
 
         return c
     }
