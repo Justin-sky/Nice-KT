@@ -21,10 +21,6 @@ include("subProjects:nice-scaffold")
 findProject(":subProjects:nice-scaffold")?.name = "nice-scaffold"
 include("apps:app-gateway")
 findProject(":apps:app-gateway")?.name = "app-gateway"
-include("apps:VertxResearch")
-findProject(":apps:VertxResearch")?.name = "VertxResearch"
-include("apps:proto-lib")
-findProject(":apps:proto-lib")?.name = "proto-lib"
 include("apps:app-login")
 findProject(":apps:app-login")?.name = "app-login"
 include("apps:app-gameserver")
