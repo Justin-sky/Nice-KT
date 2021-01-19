@@ -55,7 +55,7 @@ compileTestKotlin.kotlinOptions {
 
 val distZip: Zip by tasks
 distZip.into(project.name) {
-    from(".")
+    from("./src/main/resources")
     include("conf/**")
 }
 
@@ -64,7 +64,9 @@ distTar.enabled = false
 
 val installDist: Sync by tasks
 installDist.into("conf") {
-    from("./conf")
+    from("./src/main/resources/conf")
     include("**")
 }
+
+
 
