@@ -66,7 +66,7 @@ distTar.enabled = false
 val installDist: Sync by tasks
 installDist.into("conf") {
     from("./src/main/resources/conf")
-    include("**")
+    include("*")
 }
 
 
