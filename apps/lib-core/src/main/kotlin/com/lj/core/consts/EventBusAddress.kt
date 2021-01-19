@@ -1,4 +1,4 @@
-package com.lj.core.eventBus
+package com.lj.core.consts
 
 class EventBusAddress {
     companion object{

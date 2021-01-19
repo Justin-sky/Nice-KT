@@ -1,6 +1,7 @@
 package com.lj
 
-import com.lj.core.eventBus.EventBusAddress
+import com.lj.core.common.IdGenerater
+import com.lj.core.consts.EventBusAddress
 import com.lj.core.net.SocketManager
 import fb.FBManager
 import com.lj.core.net.msg.MessageDispatcher
@@ -8,7 +9,6 @@ import com.lj.core.net.msg.MsgMessageCodec
 import com.lj.core.service.Msg
 import com.lj.core.service.handler.ServiceDispatcher
 import kt.scaffold.Application
-import kt.scaffold.tools.logger.Logger
 
 suspend fun main() {
 
@@ -17,11 +17,15 @@ suspend fun main() {
     //Service消息处理
     ServiceDispatcher.initialize("com.lj.msg")
 
+
     //加载静态表数据
     FBManager.initialize()
 
     //初始化Vertx
     Application.setupVertx()
+
+    //初始化UUID
+    IdGenerater.initUUID("niceMongo")
 
     //启动Login Server
     Application.deployVerticle(LoginVerticle::class.java.name,"LoginVerticle")

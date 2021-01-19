@@ -1,7 +1,7 @@
 package com.lj.msg
 
 import com.lj.core.common.ServiceHandlerAnnotation
-import com.lj.core.eventBus.EventBusAddress
+import com.lj.core.consts.EventBusAddress
 import com.lj.core.net.Opcode
 import com.lj.core.net.SocketManager
 import com.lj.core.service.Msg
@@ -10,8 +10,6 @@ import com.lj.proto.Benchmark
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.Handler
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kt.crypto.decodeBase64
 import kt.crypto.encodeBase64
 import kt.scaffold.tools.logger.Logger

@@ -1,6 +1,6 @@
 package com.lj
 
-import com.lj.core.eventBus.EventBusAddress
+import com.lj.core.consts.EventBusAddress
 import com.lj.core.net.SocketManager
 import com.lj.core.net.msg.MsgMessageCodec
 import com.lj.core.service.Msg

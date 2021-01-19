@@ -1,5 +1,6 @@
 package com.lj
 
+import com.lj.core.common.IdGenerater
 import com.lj.core.net.msg.MsgMessageCodec
 import com.lj.core.service.Msg
 import fb.FBManager
@@ -16,6 +17,9 @@ suspend fun main() {
 
     //初始化Vertx
     Application.setupVertx()
+
+    //初始化UUID
+    IdGenerater.initUUID("niceMongo")
 
     //启动Game Server
     Application.deployVerticle(GameServerServiceVerticle::class.java.name,"GameServerVerticle")

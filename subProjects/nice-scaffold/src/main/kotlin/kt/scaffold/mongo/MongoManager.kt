@@ -15,19 +15,21 @@ object MongoManager {
     }
 
     private fun createMongo(name:String,shared:Boolean = true):MongoClient{
+
         return instances.getOrPut(name){
+            var client: MongoClient?
             if(shared){
-                MongoClient.createShared(
+                client = MongoClient.createShared(
                     Application.vertx,
                     optionsOf(name)
                 )
             }else{
-                MongoClient.create(
+                client = MongoClient.create(
                     Application.vertx,
                     optionsOf(name)
                 )
             }
-
+            return client
         }
     }
 

@@ -36,7 +36,7 @@ application {
     mainClass.set("com.lj.AppAllInOne")
 
     // 可以在此添加jvm内存参数, eg: '-Xms512m', '-Xmx4096m'
-    applicationDefaultJvmArgs = listOf("-Duser.timezone=GMT+8", "-Dfile.encoding=UTF-8", "-Dsun.jnu.encoding=UTF-8")
+    applicationDefaultJvmArgs = listOf("-Xss512K","-Duser.timezone=GMT+8", "-Dfile.encoding=UTF-8", "-Dsun.jnu.encoding=UTF-8")
 }
 
 val compileKotlin: KotlinCompile by tasks

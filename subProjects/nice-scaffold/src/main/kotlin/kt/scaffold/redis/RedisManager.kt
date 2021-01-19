@@ -3,6 +3,7 @@ package kt.scaffold.redis
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.file.openOptionsOf
 import io.vertx.redis.client.Redis
+import io.vertx.redis.client.RedisAPI
 import io.vertx.redis.client.RedisOptions
 import kt.scaffold.Application
 import kt.scaffold.tools.KtException
@@ -12,8 +13,10 @@ object RedisManager {
 
     private val instances = mutableMapOf<String, Redis>()
 
-    fun redisOf(name: String):Redis{
-        return instances[name]?:createRedis(name)
+    fun redisOf(name: String):RedisAPI{
+        val redis =  instances[name]?:createRedis(name)
+
+        return RedisAPI.api(redis)
     }
 
     @Synchronized
