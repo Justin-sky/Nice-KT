@@ -19,6 +19,8 @@ open abstract class Entity {
 
     @JsonIgnore
     val updateComponentJson:JsonObject = JsonObject()
+    @JsonIgnore
+    val removeComponentJson:JsonObject = JsonObject()
 
     inline fun <reified T> addComponent(saveDb:Boolean = false):T where T:Component{
         val clz = T::class.java
@@ -44,7 +46,11 @@ open abstract class Entity {
     }
 
     inline fun <reified T:Component> removeComponent(){
-        this.components.remove(T::class.java.simpleName)
+
+        val name = T::class.java.simpleName
+        this.components.remove(name)
+
+        removeComponentJson.put("components.${name}", 1)
     }
 
 

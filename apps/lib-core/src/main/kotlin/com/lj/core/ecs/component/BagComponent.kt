@@ -1,5 +1,6 @@
 package com.lj.core.ecs.component
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonTypeName
 import com.lj.core.ecs.Component
 import io.vertx.core.json.JsonObject
@@ -33,6 +34,7 @@ class BagComponent: Component() {
         this.addPullJson("components.BagComponent.cardList",JsonObject().put("_id",card._id))
     }
 
+    @JsonIgnore
     fun copyAllCards():List<Card>{
         return this.cardList.toList()
     }

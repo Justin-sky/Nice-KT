@@ -45,10 +45,12 @@ object DBEntityManager {
             val pullJson = component.getPullJson()
             val pushJson = component.getPushJson()
             val updateJson = component.getUpdateJson()
+            val unsetJson = component.getUnsetJson()
 
             val q = component.query
 
             if(!updateJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$set",updateJson))
+            if(!unsetJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$unset",unsetJson))
             if(!pushJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$push",pushJson))
             if(!pullJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$pull",pullJson))
 
@@ -67,5 +69,12 @@ object DBEntityManager {
         }
     }
 
+    suspend fun removeComponent2DBAwait(entity: Entity){
+
+        val q = JsonObject().put("_id",entity._id)
+        val rmcomponentJson = entity.removeComponentJson
+        if(!rmcomponentJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$unset",rmcomponentJson))
+        rmcomponentJson.clear()
+    }
 
 }

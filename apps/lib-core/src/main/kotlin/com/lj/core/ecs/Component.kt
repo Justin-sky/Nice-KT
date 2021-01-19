@@ -33,8 +33,10 @@ open abstract class Component {
 
 
     private val updateJson:JsonObject = JsonObject() //更新cache
+    private val unsetJson:JsonObject = JsonObject() //删除键
     private val pushJson:JsonObject= JsonObject()  //数组中添加对象
     private val pullJson:JsonObject = JsonObject() //删除数组对象
+
 
     fun addUpdateJson(key:String, value:Any){
         this.updateJson.put(key,value)
@@ -46,6 +48,20 @@ open abstract class Component {
             json.put(entity.key, entity.value)
         }
         if (clear) this.updateJson.clear()
+
+        return json;
+    }
+
+    fun addUnsetJson(key: String, value: Any){
+        this.unsetJson.put(key, value)
+    }
+
+    fun getUnsetJson(clear: Boolean = true):JsonObject{
+        val json = JsonObject()
+        unsetJson.forEach(){ entity->
+            json.put(entity.key, entity.value)
+        }
+        if (clear) this.unsetJson.clear()
 
         return json;
     }

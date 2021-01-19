@@ -65,8 +65,14 @@ class LoginGateHandler: BaseHandler() {
                 bag.addCard(Card(3,"card3",3,3))
               //  DBEntityManager.updateEntity2DBAwait(user)
 
+                //add
                // user.addComponent<TeamComponent>(true)
                // DBEntityManager.updateComponent2DBAwait(user)
+
+                //remove
+                user.removeComponent<TeamComponent>()
+                DBEntityManager.removeComponent2DBAwait(user)
+
             }
             Logger.debug(user.toString())
 
