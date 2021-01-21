@@ -13,8 +13,6 @@ include("subProjects:nice-log")
 findProject(":subProjects:nice-log")?.name = "nice-log"
 include("subProjects:nice-tools")
 findProject(":subProjects:nice-tools")?.name = "nice-tools"
-include("subProjects:jodd-dependency")
-findProject(":subProjects:jodd-dependency")?.name = "jodd-dependency"
 include("subProjects:nice-crypto")
 findProject(":subProjects:nice-crypto")?.name = "nice-crypto"
 include("subProjects:nice-scaffold")

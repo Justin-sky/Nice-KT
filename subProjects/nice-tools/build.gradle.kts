@@ -13,7 +13,6 @@ dependencies {
 
     // android gradle依赖：implementation 和compile的区别
     // 参考: https://www.jianshu.com/p/f34c179bc9d0 根据需要选择使用不同的依赖设定方式
-    api(project(":subProjects:jodd-dependency"))
     api(project(":subProjects:nice-log"))
 
     api("com.fasterxml.jackson.module:jackson-module-jsonSchema:2.10.2")
@@ -27,6 +26,7 @@ dependencies {
 
     api("com.typesafe:config:1.3.4")
     api("org.apache.commons:commons-lang3:3.9")
+    api("org.jodd:jodd-util:6.0.0")
 }
 
 tasks.register<Jar>("sourcesJar") {
