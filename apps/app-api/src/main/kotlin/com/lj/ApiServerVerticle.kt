@@ -23,25 +23,14 @@ class ApiServerVerticle : AbstractVerticle() {
 
         val router = Router.router(vertx)
 
-        //写法1
-        router.route(HttpMethod.GET,"/test").handler(){ ctx->
+        //写法1  http://127.0.0.1/api/
+        router.route("/api/*").handler(){ ctx->
 
-            val response = ctx.response()
-            response.putHeader("content-type", "text/plain")
 
-            response.write(Buffer.buffer("Hello"))
 
-            response.end()
+            ctx.response().end("Hello, api")
         }
-        //写法2
-        router.get("/test1").handler { ctx->
-            val response = ctx.response()
-            response.putHeader("content-type", "text/plain")
 
-            response.write(Buffer.buffer("Hello 33"))
-
-            response.end()
-        }
 
         server.requestHandler(router)
 
