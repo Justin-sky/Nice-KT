@@ -28,3 +28,5 @@ include("apps:lib-core")
 findProject(":apps:lib-core")?.name = "lib-core"
 include("apps:app-allinone")
 findProject(":apps:app-allinone")?.name = "app-allinone"
+include("apps:app-api")
+findProject(":apps:app-api")?.name = "app-api"

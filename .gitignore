@@ -11,3 +11,4 @@ subProjects/nice-crypto/build/
 subProjects/nice-log/build/
 subProjects/nice-scaffold/build/
 subProjects/nice-tools/build/
+apps/app-api/build/
