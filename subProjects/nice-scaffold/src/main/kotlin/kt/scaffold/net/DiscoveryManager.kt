@@ -68,6 +68,8 @@ object DiscoveryManager {
         try {
             val re = discovery.publishAwait(record)
             registeredRecords.add(re)
+
+            Logger.debug("Service start... ${record.metadata.getInteger("server_id")}:${record.metadata.getInteger("server_type")}")
         }catch (e: Exception){
             Logger.error("publish error: ${record.name},e:${e.cause}")
         }
