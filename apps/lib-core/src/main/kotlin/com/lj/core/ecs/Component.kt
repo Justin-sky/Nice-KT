@@ -21,6 +21,9 @@ open abstract class Component {
     @JsonIgnore
     val query = JsonObject().put("_id",_id)  //entity查询条件
 
+    @JsonIgnore
+    var isDisposed:Boolean = false
+
     @JsonBackReference  //加此此注解。。不会被序列化，解决循环依赖问题
     var entity:Entity? = null
         get() {
@@ -97,5 +100,12 @@ open abstract class Component {
 
     open fun setup(){}
 
+    open fun update(){}
+
+    open fun onDestroy(){}
+
+    open fun dispose(){
+        isDisposed = true
+    }
 
 }

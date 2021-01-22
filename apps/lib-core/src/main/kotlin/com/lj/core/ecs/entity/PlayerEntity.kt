@@ -5,7 +5,6 @@ import com.lj.core.ecs.Entity
 
 @JsonTypeName("player")
 class PlayerEntity: Entity() {
-    override var docName: String = "user"
 
 
 }
