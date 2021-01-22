@@ -1,32 +1,34 @@
 package com.lj.gamePlay.combat.attribute
 
 /**
- * 浮点型修饰器
+ * 整形修饰器
  */
-class FloatModifier(var value: Float = 0.0f)
+class IntModifier{
+    var value: Int = 0
+}
 
 /**
- * 浮点型修饰器集合
+ * 整形修饰器集合
  */
-class FloatModifierCollection{
-    var totalValue:Float = 0.0f
+class IntModifierCollection{
+    var totalValue:Int = 0
 
-    private val modifiers = mutableListOf<FloatModifier>()
+    private val modifiers = mutableListOf<IntModifier>()
 
-    fun addModifier(modifier:FloatModifier):Float{
+    fun addModifier(modifier:IntModifier):Int{
         this.modifiers.add(modifier)
         this.update()
         return this.totalValue
     }
 
-    fun removeModifier(modifier: FloatModifier): Float {
+    fun removeModifier(modifier: IntModifier): Int {
         this.modifiers.remove(modifier)
         this.update()
         return this.totalValue
     }
 
     fun update(){
-        this.totalValue = 0.0f
+        this.totalValue = 0
         this.modifiers.forEach { item->
             this.totalValue += item.value
         }
@@ -35,69 +37,69 @@ class FloatModifierCollection{
 
 
 
-class FloatNumberic {
-    var value:Float = 0.0f
-    var baseValue:Float = 0.0f
-    var add:Float = 0.0f
-    var pctAdd:Float = 0.0f
-    var finalAdd:Float = 0.0f
-    var finalPctAdd:Float = 0.0f
+class IntNumberic {
+    var value:Int = 0
+    var baseValue:Int = 0
+    var add:Int = 0
+    var pctAdd:Int = 0
+    var finalAdd:Int = 0
+    var finalPctAdd:Int = 0
 
-    private val addCollection = FloatModifierCollection()
-    private val pctAddCollection = FloatModifierCollection()
-    private val finalAddCollection = FloatModifierCollection()
-    private val finalPctAddCollection = FloatModifierCollection()
+    private val addCollection = IntModifierCollection()
+    private val pctAddCollection = IntModifierCollection()
+    private val finalAddCollection = IntModifierCollection()
+    private val finalPctAddCollection = IntModifierCollection()
 
     fun initialize(){
-        this.baseValue = 0f
-        this.add = 0f
-        this.pctAdd = 0f
-        this.finalAdd = 0f
-        this.finalPctAdd = 0f
+        this.baseValue = 0
+        this.add = 0
+        this.pctAdd = 0
+        this.finalAdd = 0
+        this.finalPctAdd = 0
     }
 
-    fun setBase(value:Float):Float{
+    fun setBase(value:Int):Int{
         this.baseValue = value
         this.update()
         return this.baseValue
     }
 
-    fun addAddModifier(modifier:FloatModifier){
+    fun addAddModifier(modifier:IntModifier){
         this.add = this.addCollection.addModifier(modifier)
         this.update()
     }
 
-    fun addPctAddModifier(modifier: FloatModifier){
+    fun addPctAddModifier(modifier: IntModifier){
         this.pctAdd = this.pctAddCollection.addModifier(modifier)
         this.update()
     }
 
-    fun addFinalAddModifier(modifier: FloatModifier){
+    fun addFinalAddModifier(modifier: IntModifier){
         this.finalAdd = this.finalAddCollection.addModifier(modifier)
         this.update()
     }
 
-    fun addFinalPctAddModifier(modifier: FloatModifier){
+    fun addFinalPctAddModifier(modifier: IntModifier){
         this.finalPctAdd = this.finalPctAddCollection.addModifier(modifier)
         this.update()
     }
 
-    fun removeAddModifier(modifier: FloatModifier){
+    fun removeAddModifier(modifier: IntModifier){
         this.add = this.addCollection.removeModifier(modifier)
         this.update()
     }
 
-    fun removePctAddModifier(modifier: FloatModifier){
+    fun removePctAddModifier(modifier: IntModifier){
         this.pctAdd = this.pctAddCollection.removeModifier(modifier)
         this.update()
     }
 
-    fun removeFinalAddModifier(modifier: FloatModifier){
+    fun removeFinalAddModifier(modifier: IntModifier){
         this.finalAdd = this.finalAddCollection.removeModifier(modifier)
         this.update()
     }
 
-    fun removeFinalPctAddModifier(modifier: FloatModifier){
+    fun removeFinalPctAddModifier(modifier: IntModifier){
         this.finalPctAdd = this.finalPctAddCollection.removeModifier(modifier)
         this.update()
     }
@@ -107,6 +109,6 @@ class FloatNumberic {
         val value2 = (value1 + add) * (100 + pctAdd) / 100f
         val value3 = (value2 + finalAdd) * (100 + finalPctAdd) / 100f
 
-        this.value = value3
+        this.value = value3.toInt()
     }
 }
