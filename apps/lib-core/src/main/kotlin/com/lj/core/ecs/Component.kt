@@ -95,7 +95,7 @@ open abstract class Component {
     }
 
 
-    fun setup(){}
+    open fun setup(){}
 
 
 }
