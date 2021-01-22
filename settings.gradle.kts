@@ -30,3 +30,5 @@ include("apps:app-allinone")
 findProject(":apps:app-allinone")?.name = "app-allinone"
 include("apps:app-api")
 findProject(":apps:app-api")?.name = "app-api"
+include("apps:app-battle")
+findProject(":apps:app-battle")?.name = "app-battle"

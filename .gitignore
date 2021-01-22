@@ -12,3 +12,4 @@ subProjects/nice-log/build/
 subProjects/nice-scaffold/build/
 subProjects/nice-tools/build/
 apps/app-api/build/
+apps/app-battle/build/
