@@ -1,16 +1,32 @@
 package com.lj
 
+import com.lj.gamePlay.config.BattleConfigManager
+import com.lj.gamePlay.config.BattleConfigType
+import kt.scaffold.Application
 import kt.scaffold.tools.logger.Logger
+
+
+class A{
+    lateinit var a:String
+    lateinit var b:MutableMap<Int,String>
+}
+
 
 fun main() {
 
-    val list = mutableListOf<Int>(1,2,3,4)
+    //初始化Vertx
+    Application.setupVertx()
 
-    for (i in list.size-1 downTo 0){
 
-        val it = list[i]
-        Logger.debug("hhhhhhhhhhhhhh   $it")
-    }
 
-    Logger.debug("Hello")
+
+
+    //val a =   BattleConfigManager.getSkillConfig("1004")
+
+    val b = BattleConfigManager.getStatusConfig("Weak")
+
+    Logger.debug(b.toString())
+
+
+
 }

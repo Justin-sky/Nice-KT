@@ -1,0 +1,1 @@
+{"id":"CauseDamagePctModify","name":"造成伤害百分比修饰","statusType":2,"duration":0,"showInStatusSlots":true,"canStack":false,"maxStack":0,"enableChildrenStatuses":false,"childrenStatuses":[],"enabledStateModify":false,"actionControlType":0,"enabledAttributeModify":true,"attributeType":4001,"numericValue":"变动数值","modifyType":1,"enabledLogicTrigger":false,"effects":[]}

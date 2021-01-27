@@ -1,0 +1,1 @@
+{"id":"AttackPowerModify","name":"攻击力修饰","statusType":2,"duration":0,"showInStatusSlots":true,"canStack":false,"maxStack":0,"enableChildrenStatuses":false,"childrenStatuses":[],"enabledStateModify":false,"actionControlType":0,"enabledAttributeModify":true,"attributeType":1001,"numericValue":"变动数值","modifyType":0,"enabledLogicTrigger":false,"effects":[]}

@@ -1,0 +1,1 @@
+{"id":"Shield","name":"护盾","statusType":0,"duration":0,"showInStatusSlots":false,"canStack":false,"maxStack":0,"enableChildrenStatuses":false,"childrenStatuses":[],"enabledStateModify":false,"actionControlType":0,"enabledAttributeModify":true,"attributeType":3001,"numericValue":"护盾值","modifyType":0,"enabledLogicTrigger":false,"effects":[]}

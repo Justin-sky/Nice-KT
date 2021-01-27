@@ -1,0 +1,1 @@
+{"id":1003,"name":"治愈","skillSpellType":0,"targetSelectType":0,"affectAreaType":0,"circleAreaRadius":0.0,"affectTargetType":0,"coldTime":3000,"effects":[{"cureValueFormula":"200","addSkillEffectTargetType":0,"effectTriggerType":0,"conditionType":0,"actionPointType":0,"interval":null,"conditionParam":null,"triggerProbability":"100%","@class":"CureEffect"}]}

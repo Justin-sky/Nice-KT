@@ -1,0 +1,1 @@
+{"id":"MoveSpeedPctModify","name":"移动速度百分比修饰","statusType":2,"duration":0,"showInStatusSlots":true,"canStack":false,"maxStack":0,"enableChildrenStatuses":false,"childrenStatuses":[],"enabledStateModify":false,"actionControlType":0,"enabledAttributeModify":true,"attributeType":2002,"numericValue":"变动数值","modifyType":1,"enabledLogicTrigger":false,"effects":[]}
