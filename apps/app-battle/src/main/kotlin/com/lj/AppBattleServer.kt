@@ -3,6 +3,7 @@ package com.lj
 import com.lj.gamePlay.config.BattleConfigManager
 import com.lj.gamePlay.config.BattleConfigType
 import kt.scaffold.Application
+import kt.scaffold.tools.Number
 import kt.scaffold.tools.logger.Logger
 
 
@@ -20,13 +21,8 @@ fun main() {
 
 
 
+    val num = Number(10.0)
 
-    //val a =   BattleConfigManager.getSkillConfig("1004")
-
-    val b = BattleConfigManager.getStatusConfig("Weak")
-
-    Logger.debug(b.toString())
-
-
-
+    Logger.debug(num.toString())
+    Logger.debug(num.value.toString())
 }

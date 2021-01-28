@@ -1,4 +1,4 @@
-package com.lj.gamePlay.types
+package com.lj.gamePlay.combat.types
 
 /**
  *  动作作用目标

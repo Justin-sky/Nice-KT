@@ -27,6 +27,11 @@ dependencies {
     api("com.typesafe:config:1.3.4")
     api("org.apache.commons:commons-lang3:3.9")
     api("org.jodd:jodd-util:6.0.0")
+
+    // Use the Kotlin test library.
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    // Use the Kotlin JUnit integration.
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
 tasks.register<Jar>("sourcesJar") {
