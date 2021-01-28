@@ -21,6 +21,6 @@ https://github.com/Justin-sky/Nice-TS
 
 #### 文档
 
-
+公式解析器：https://zhuanlan.zhihu.com/p/347753179
 
 QQ群：346340389
