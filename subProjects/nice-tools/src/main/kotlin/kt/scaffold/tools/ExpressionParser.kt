@@ -106,18 +106,18 @@ class MultiParameterList(var m_values:Array<IValue>):IValue{
     }
 }
 
-class CustomFunction(var m_name:String, var m_deletage: (Array<Double>) -> Double, var m_params:Array<IValue>?):IValue{
+class CustomFunction(var m_name:String, var m_deletage: (Array<Double>) -> Double, var m_params:Array<IValue>):IValue{
     override val value:Double
         get() {
             if (m_params.isNullOrEmpty()){
                 return m_deletage(arrayOf())
             }else{
-                return m_deletage(m_params!!.map{it -> it.value}.toTypedArray())
+                return m_deletage(m_params.map{it -> it.value}.toTypedArray())
             }
         }
 
     override fun toString(): String {
-        return "( ${m_params?.joinToString(separator = ",")} )"
+        return "( ${m_params.joinToString(separator = ",")} )"
     }
 }
 
@@ -134,13 +134,13 @@ class Expression:IValue{
     override val value: Double
         get() = expressionTree.value
 
-    val multiValue: Array<Double>?
+    val multiValue: Array<Double>
         get() {
             val t = expressionTree as? MultiParameterList
             if (t != null){
                 return t.parameters.map { i->i.value }.toTypedArray()
             }
-            return null
+            return arrayOf()
         }
 
     override fun toString(): String {
@@ -157,7 +157,7 @@ class Expression:IValue{
         return { p -> invoke(p, param2)}
     }
 
-    fun toMultiResultDelegate(vararg aParamOrder:String):(aParams:Array<Double>)->Array<Double>?{
+    fun toMultiResultDelegate(vararg aParamOrder:String):(aParams:Array<Double>)->Array<Double>{
         val param = mutableListOf<Parameter?>()
         for(aParam in aParamOrder){
             param.add(parameters[aParam])
@@ -175,7 +175,7 @@ class Expression:IValue{
         return value
     }
 
-    fun invokeMultiResult(aParams:Array<Double>, aParamList:Array<Parameter?>):Array<Double>?{
+    fun invokeMultiResult(aParams:Array<Double>, aParamList:Array<Parameter?>):Array<Double>{
         val count = min(aParamList.size, aParams.size)
         for (i in 0 until count){
             aParamList[i]?.value = aParams[i]
@@ -330,28 +330,25 @@ class ExpressionParser {
         val mPos = aExpression.indexOf("&")
         if (mPos > 0){
             val fName = aExpression.substring(0, mPos)
-            for (M in m_funcs){
-                if (fName == M.key){
-                    val inner = aExpression.substring(M.key.length)
-                    val param = parse(inner)
-                    val multiParams = param as? MultiParameterList
-                    val parameters:Array<IValue>
-                    if (multiParams != null) {
-                        parameters = multiParams.parameters
-                    }else{
-                        parameters = arrayOf(param)
-                    }
-                    val v = M.value
-                    return CustomFunction(M.key, v, parameters)
+            val func = m_funcs[fName]
+            if (func != null){
+                val inner = aExpression.substring(fName.length)
+                val param = parse(inner)
+                val multiParams = param as? MultiParameterList
+                val parameters:Array<IValue>
+                if (multiParams != null) {
+                    parameters = multiParams.parameters
+                }else{
+                    parameters = arrayOf(param)
                 }
+                return CustomFunction(fName, func, parameters)
             }
         }
 
-        for(C in m_consts){
-            if (aExpression == C.key){
-                return CustomFunction(C.key,{ C.value() }, null)
-            }
-
+        val constF = m_consts[aExpression]
+        if (constF != null){
+            //参数为空数组，所以输出的表达式 在 常量处为 空
+            return CustomFunction(aExpression,{ constF() }, arrayOf())
         }
 
         val index2a = aExpression.indexOf('&')
