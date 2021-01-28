@@ -21,7 +21,8 @@ class OperationSum(aValues: Array<IValue>) : IValue{
     private var mValues:Array<IValue>
     override val value:Double
         get() {
-            return mValues.sumByDouble { it.value }
+            val sum = mValues.sumByDouble { it.value }
+            return sum
         }
 
     init {
@@ -47,7 +48,7 @@ class OperationProduct(private var m_values: Array<IValue>):IValue{
         get() {
             val product =  m_values.fold(1.0){
                     acc,i:IValue->
-                return  acc * i.value
+                  acc * i.value
             }
             return product
         }
@@ -60,7 +61,8 @@ class OperationProduct(private var m_values: Array<IValue>):IValue{
 class OperationPower(var m_value: IValue, var m_power: IValue) : IValue {
     override val value:Double
         get() {
-            return m_value.value.pow(m_power.value)
+            val power = m_value.value.pow(m_power.value)
+            return power
         }
 
     override fun toString(): String {
@@ -104,10 +106,14 @@ class MultiParameterList(var m_values:Array<IValue>):IValue{
     }
 }
 
-class CustomFunction(var m_name:String, var m_deletage:(Array<Double>)->Double, var m_params:Array<IValue>?):IValue{
+class CustomFunction(var m_name:String, var m_deletage: (Array<Double>) -> Double, var m_params:Array<IValue>?):IValue{
     override val value:Double
         get() {
-            return m_deletage(m_params?.map{it -> it.value}!!.toTypedArray())
+            if (m_params.isNullOrEmpty()){
+                return m_deletage(arrayOf())
+            }else{
+                return m_deletage(m_params!!.map{it -> it.value}.toTypedArray())
+            }
         }
 
     override fun toString(): String {
@@ -162,7 +168,7 @@ class Expression:IValue{
     }
 
     fun invoke(aParams:Array<Double>, aParamList:Array<Parameter?>):Double{
-        val count = Math.min(aParamList.size, aParams.size)
+        val count = min(aParamList.size, aParams.size)
         for (i in 0 until count){
             aParamList[i]?.value = aParams[i]
         }
@@ -170,7 +176,7 @@ class Expression:IValue{
     }
 
     fun invokeMultiResult(aParams:Array<Double>, aParamList:Array<Parameter?>):Array<Double>?{
-        val count = Math.min(aParamList.size, aParams.size)
+        val count = min(aParamList.size, aParams.size)
         for (i in 0 until count){
             aParamList[i]?.value = aParams[i]
         }
@@ -239,7 +245,7 @@ class ExpressionParser {
 
     fun findClosingBracket(aText:String, aStart:Int, aOpen:Char, aClose:Char):Int{
         var counter = 0
-        for (i in aStart .. aText.length){
+        for (i in aStart until aText.length){
             if(aText[i] == aOpen) counter++
             if (aText[i] == aClose) counter--
             if (counter == 0) return i
@@ -259,8 +265,8 @@ class ExpressionParser {
         }
     }
 
-    fun parse(aExpression:String):IValue{
-        var aExpression = aExpression.trim()
+    fun parse(aExp:String):IValue{
+        var aExpression = aExp.trim()
         var index = aExpression.indexOf('(')
         while (index >= 0){
             aExpression = substitudeBracket(aExpression, index)
@@ -289,8 +295,8 @@ class ExpressionParser {
             val parts = aExpression.split('-')
             val exp = mutableListOf<IValue>()
             if (!parts[0].trim().isNullOrEmpty()) exp.add(parse(parts[0]))
-            for (part in parts){
-                val s = part.trim()
+            for (i in 1 until parts.size){
+                val s = parts[i].trim()
                 if (!s.isNullOrEmpty()) exp.add(OperationNegate(parse(s)))
             }
             if (exp.size == 1) return exp[0]
@@ -309,8 +315,8 @@ class ExpressionParser {
             val parts = aExpression.split('/')
             val exp = mutableListOf<IValue>()
             if (!parts[0].trim().isNullOrEmpty()) exp.add(parse(parts[0]))
-            for (part in parts){
-                val s = part.trim()
+            for (i in 1 until parts.size){
+                val s = parts[i].trim()
                 if (!s.isNullOrEmpty()) exp.add(OperationReciprocal(parse(s)))
             }
             return OperationProduct(exp.toTypedArray())
@@ -325,7 +331,7 @@ class ExpressionParser {
         if (mPos > 0){
             val fName = aExpression.substring(0, mPos)
             for (M in m_funcs){
-                if (fName.equals(M.key)){
+                if (fName == M.key){
                     val inner = aExpression.substring(M.key.length)
                     val param = parse(inner)
                     val multiParams = param as? MultiParameterList
@@ -335,13 +341,17 @@ class ExpressionParser {
                     }else{
                         parameters = arrayOf(param)
                     }
-                    return CustomFunction(M.key, M.value, parameters)
+                    val v = M.value
+                    return CustomFunction(M.key, v, parameters)
                 }
             }
         }
 
         for(C in m_consts){
-            if (aExpression.equals(C.key)) return CustomFunction(C.key,{ C.value() }, null)
+            if (aExpression == C.key){
+                return CustomFunction(C.key,{ C.value() }, null)
+            }
+
         }
 
         val index2a = aExpression.indexOf('&')

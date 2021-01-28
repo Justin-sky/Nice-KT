@@ -19,8 +19,8 @@ class ExpressionParserTest {
     fun testHealPoint(){
 
         val parser = ExpressionParser()
-        val exp = parser.evaluteExpression("(5+3)*8^2-5*(-2)")
-        Logger.debug("${exp.value}")
+//        val exp = parser.evaluteExpression("(5+3)*8^2-5*(-2)")
+//        Logger.debug(" = ${exp.value}")
 
 
         val exp2 = parser.evaluteExpression("sin(x*PI/180)")
@@ -35,6 +35,8 @@ class ExpressionParserTest {
         val f = exp3.toMultiResultDelegate("angle", "length")
         val res = f(arrayOf(45.0,2.0))
 
+
+
         parser.addFunc("test"){ p->
             Logger.debug("Test: ${p.size}")
             return@addFunc 42.0
@@ -45,6 +47,11 @@ class ExpressionParserTest {
         parser.addConst("meaningOfLife"){ 42.0}
         Logger.debug("Result: ${parser.evaluate("2*meaningOfLife")}")
 
+
+        val exp4 = parser.evaluteExpression("攻击力*2 +100 + 防御力*10")
+        exp4.parameters["攻击力"]!!.value = 10.0
+        exp4.parameters["防御力"]!!.value = 20.0
+        Logger.debug("攻击力： ${exp4.value}")
     }
 
 
