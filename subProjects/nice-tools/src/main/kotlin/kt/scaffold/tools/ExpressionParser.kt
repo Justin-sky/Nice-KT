@@ -163,7 +163,7 @@ class Expression:IValue{
 
     fun invoke(aParams:Array<Double>, aParamList:Array<Parameter?>):Double{
         val count = Math.min(aParamList.size, aParams.size)
-        for (i in 0 .. count){
+        for (i in 0 until count){
             aParamList[i]?.value = aParams[i]
         }
         return value
@@ -171,7 +171,7 @@ class Expression:IValue{
 
     fun invokeMultiResult(aParams:Array<Double>, aParamList:Array<Parameter?>):Array<Double>?{
         val count = Math.min(aParamList.size, aParams.size)
-        for (i in 0 .. count){
+        for (i in 0 until count){
             aParamList[i]?.value = aParams[i]
         }
         return multiValue
@@ -250,7 +250,7 @@ class ExpressionParser {
     fun substitudeBracket(aExpression:String, aIndex:Int):String{
         val closing = findClosingBracket(aExpression, aIndex, '(', ')')
         if (closing > aIndex + 1){
-            val inner = aExpression.substring(aIndex+1, closing - aIndex -1)
+            val inner = aExpression.substring(aIndex+1, closing)
             m_BracketHeap.add(inner)
             val sub = "&${m_BracketHeap.size - 1};"
             return aExpression.substring(0, aIndex) + sub + aExpression.substring(closing+1)
@@ -347,7 +347,7 @@ class ExpressionParser {
         val index2a = aExpression.indexOf('&')
         val index2b = aExpression.indexOf(';')
         if (index2a >= 0 && index2b >= 2){
-            val inner = aExpression.substring(index2a + 1, index2b -index2a -1)
+            val inner = aExpression.substring(index2a + 1, index2b)
             val bracketIndex = inner.toIntOrNull()
             if (bracketIndex !=null && bracketIndex >= 0 && bracketIndex < m_BracketHeap.size){
                 return parse(m_BracketHeap[bracketIndex])
