@@ -1,6 +1,6 @@
 package com.lj.core.ecs
 
-class MasterEntity :Entity(){
+object MasterEntity :Entity(){
 
     val entities = mutableMapOf<Any, MutableList<Entity>>()
 
@@ -16,6 +16,9 @@ class MasterEntity :Entity(){
                 allComponents.remove(it)
                 continue
             }
+
+            if (it.disable) continue
+
             it.update()
         }
 

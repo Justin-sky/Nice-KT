@@ -22,6 +22,15 @@ open abstract class Component {
     val query = JsonObject().put("_id",_id)  //entity查询条件
 
     @JsonIgnore
+    var enable:Boolean = true
+
+    val disable:Boolean
+        @JsonIgnore
+        get() {
+            return !enable
+        }
+
+    @JsonIgnore
     var isDisposed:Boolean = false
 
     @JsonBackReference  //加此此注解。。不会被序列化，解决循环依赖问题
@@ -34,6 +43,9 @@ open abstract class Component {
             query.put("_id", field!!._id)
         }
 
+    fun <T> getEntityT():T where T:Entity{
+        return entity as T
+    }
 
     private val updateJson:JsonObject = JsonObject() //更新cache
     private val unsetJson:JsonObject = JsonObject() //删除键
@@ -99,6 +111,8 @@ open abstract class Component {
 
 
     open fun setup(){}
+
+    open fun setup(initData:Any){}
 
     open fun update(){}
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.lj.core.ecs.entity.PlayerEntity
 import io.vertx.core.json.JsonObject
+import kt.scaffold.tools.logger.Logger
 import kotlin.reflect.KClass
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,property = "@class")
@@ -14,6 +15,59 @@ import kotlin.reflect.KClass
 
 open abstract class Entity {
     companion object {
+
+        inline fun <reified T> new():T where T:Entity{
+            val clz = T::class.java
+            var mCreate = clz.getDeclaredConstructor()
+            mCreate.isAccessible = true
+
+            val entity = mCreate.newInstance()
+            entity.instanceId = IdFactory.newInstanceId()
+
+            if (!MasterEntity.entities.containsKey(clz)){
+                MasterEntity.entities[clz] = mutableListOf()
+            }
+            MasterEntity.entities[clz]!!.add(entity)
+
+            return entity
+        }
+
+        inline fun <reified T> create():T where T:Entity{
+            val entity = new<T>()
+            entity._id = entity.instanceId
+            MasterEntity.addChild(entity)
+            entity.awake()
+            Logger.debug("EntityFactory->Create, ${T::class.java} = ${entity.instanceId}")
+            return entity
+        }
+
+        inline fun <reified T> create(initData: Any):T where T:Entity{
+            val entity = new<T>()
+            entity._id = entity.instanceId
+            MasterEntity.addChild(entity)
+            entity.awake(initData)
+            Logger.debug("EntityFactory->Create, ${T::class.java} = ${entity.instanceId}, $initData")
+            return entity
+        }
+
+        inline fun <reified T> createWithParent(parent: Entity):T where T:Entity{
+            val entity = new<T>()
+            entity._id = entity.instanceId
+            parent.addChild(entity)
+            entity.awake()
+            Logger.debug("EntityFactory->createWithParent, ${T::class.java} = ${entity.instanceId}")
+            return entity
+        }
+
+        inline fun <reified T> createWithParent(parent: Entity, initData:Any):T where T:Entity{
+            val entity = new<T>()
+            entity._id = entity.instanceId
+            parent.addChild(entity)
+            entity.awake(initData)
+            Logger.debug("EntityFactory->createWithParent, ${T::class.java} = ${entity.instanceId}, $initData")
+            return entity
+        }
+
         fun destroy(entity: Entity){
             entity.onDestroy()
             entity.dispose()
@@ -25,7 +79,7 @@ open abstract class Entity {
     var docName:String = "user"  //DB中的Document名称
 
     @JsonIgnore
-    var instanceId:Int = 0
+    var instanceId:Long = 0
 
     @JsonIgnore
     var parent:Entity?=null
@@ -36,6 +90,10 @@ open abstract class Entity {
         @JsonIgnore
         set(value) {
             field = value
+
+            value?.removeChild(this)
+            value?.addChild(this)
+
             this.onSetParent(value)
         }
 
@@ -77,6 +135,12 @@ open abstract class Entity {
         this.components.clear()
         this.parent?.removeChild(this)
         this.instanceId = 0
+
+        MasterEntity.entities[this::class.java]?.remove(this)
+    }
+
+    fun <T> getParentT():T where T:Entity{
+        return this.parent as T
     }
 
     fun addChild(child:Entity){
@@ -114,13 +178,33 @@ open abstract class Entity {
 
         val c = mCreate.newInstance()
         c.entity = this
+        c.isDisposed = false
         c.setup()
 
         this.components[clz.simpleName] = c;
 
         if (saveDb){
             updateComponentJson.put("components.${clz.simpleName}",JsonObject.mapFrom(c))
+        }else{
+            MasterEntity.allComponents.add(c)
         }
+
+        return c
+    }
+
+    inline fun <reified T> addComponent(initData: Any):T where T:Component{
+        val clz = T::class.java
+        var mCreate = clz.getDeclaredConstructor()
+        mCreate.isAccessible = true
+
+        val c = mCreate.newInstance()
+        c.entity = this
+        c.isDisposed = false
+        c.setup(initData)
+
+        this.components[clz.simpleName] = c;
+
+        MasterEntity.allComponents.add(c)
 
         return c
     }
