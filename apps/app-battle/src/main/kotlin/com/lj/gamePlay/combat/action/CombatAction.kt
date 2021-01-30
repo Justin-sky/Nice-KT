@@ -3,6 +3,13 @@ package com.lj.gamePlay.combat.action
 import com.lj.core.ecs.Entity
 import com.lj.gamePlay.combat.entity.CombatEntity
 
+/**
+ *  动作作用目标
+ */
+enum class ActionTargetType {
+    Instigator,
+    Target
+}
 
 enum class ActionType{
     SpellSkill, //施放技能

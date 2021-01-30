@@ -30,3 +30,13 @@ abstract class Effect {
     var conditionParam:String?=null
     var triggerProbability:String?=null
 }
+
+/**
+ * 效果作用目标
+ */
+enum class EffectTargetType {
+    Self,
+    TargetEnemy,
+    AllEnemies,
+    All
+}
