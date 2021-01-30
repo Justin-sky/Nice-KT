@@ -18,12 +18,13 @@ class CureAction :CombatAction() {
 
     fun applyCure(){
         preProcess()
-
+        target.receiveCure(this)
         postProcess()
     }
 
     //后置处理
     private fun postProcess(){
-
+        creator.triggerActionPoint(ActionPointType.PostGiveCure, this)
+        target.triggerActionPoint(ActionPointType.PostGiveCure, this)
     }
 }

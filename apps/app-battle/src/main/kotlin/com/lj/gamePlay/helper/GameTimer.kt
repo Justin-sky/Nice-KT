@@ -1,10 +1,18 @@
 package com.lj.gamePlay.helper
 
 
-class GameTimer {
-    private var _maxTime:Float = 0f
+class GameTimer(maxTime: Float) {
+    private var _maxTime:Float = maxTime
     private var _time:Float = 0f
     private var _onFinish: (() -> Unit)? = null
+
+    var maxTime:Float
+        get() {
+            return _maxTime
+        }
+        set(value) {
+            _maxTime = value
+        }
 
     val isFinished:Boolean
         get() = this._time >= this._maxTime
@@ -15,10 +23,6 @@ class GameTimer {
     val time:Float
         get() = this._time
 
-    constructor(maxTime:Float){
-        this._maxTime = maxTime
-        this._time = 0f
-    }
 
     fun reset(){
         this._time = 0f

@@ -85,6 +85,12 @@ open abstract class Entity {
     @JsonIgnore
     var instanceId:Long = 0
 
+    val isDisposed:Boolean
+        @JsonIgnore
+        get() {
+            return instanceId == 0L
+        }
+
     @JsonIgnore
     var parent:Entity?=null
         @JsonIgnore
