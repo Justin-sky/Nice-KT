@@ -3,8 +3,7 @@ package com.lj.gamePlay.combat.status.logic
 import com.lj.core.ecs.Component
 import com.lj.gamePlay.combat.status.StatusAbility
 import com.lj.gamePlay.helper.ExpressionHelper
-import com.lj.gamePlay.helper.GameTimer
-import kotlin.time.toDuration
+import com.lj.gamePlay.combat.timer.GameTimer
 
 /**
  * 逻辑间隔触发组件
@@ -12,7 +11,7 @@ import kotlin.time.toDuration
 class LogicIntervalTriggerComponent :Component(){
 
     override var enable:Boolean = true
-    lateinit var intervalTimer:GameTimer
+    lateinit var intervalTimer: GameTimer
 
     override fun setup() {
         val intervalStr = getEntityT<LogicEntity>().effect.interval

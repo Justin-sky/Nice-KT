@@ -1,7 +1,7 @@
 package com.lj.gamePlay.combat.status
 
 import com.lj.core.ecs.Component
-import com.lj.gamePlay.helper.GameTimer
+import com.lj.gamePlay.combat.timer.GameTimer
 
 /**
  * 状态的生命周期组件
@@ -9,7 +9,7 @@ import com.lj.gamePlay.helper.GameTimer
 class StatusLifeTimeComponent:Component() {
 
     override var enable: Boolean= true
-    lateinit var lifeTimer:GameTimer
+    lateinit var lifeTimer: GameTimer
 
     override fun setup() {
         val status = entity as StatusAbility

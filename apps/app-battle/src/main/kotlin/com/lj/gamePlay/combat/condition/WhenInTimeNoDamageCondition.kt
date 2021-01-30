@@ -3,10 +3,10 @@ package com.lj.gamePlay.combat.condition
 import com.lj.gamePlay.combat.action.ActionPointType
 import com.lj.gamePlay.combat.action.CombatAction
 import com.lj.gamePlay.combat.entity.CombatEntity
-import com.lj.gamePlay.helper.GameTimer
+import com.lj.gamePlay.combat.timer.GameTimer
 
 class WhenInTimeNoDamageCondition : ConditionEntity() {
-    private lateinit var noDamageTimer:GameTimer
+    private lateinit var noDamageTimer: GameTimer
 
     override fun awake(initData: Any) {
         val time = initData.toString().toFloat()

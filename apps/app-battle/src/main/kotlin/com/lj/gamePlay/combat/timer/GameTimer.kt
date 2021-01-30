@@ -1,4 +1,4 @@
-package com.lj.gamePlay.helper
+package com.lj.gamePlay.combat.timer
 
 
 class GameTimer(maxTime: Float) {
