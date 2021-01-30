@@ -1,7 +1,7 @@
 package com.lj.gamePlay.combat.ability
 
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.combatEntity.CombatEntity
+import com.lj.gamePlay.combat.entity.CombatEntity
 import com.lj.gamePlay.config.SkillConfigObject
 import com.lj.gamePlay.config.StatusConfigObject
 import com.lj.gamePlay.config.effect.Effect
@@ -11,7 +11,7 @@ import com.lj.gamePlay.config.effect.Effect
  */
 abstract class AbilityEntity :Entity(){
 
-    val owenEntity:CombatEntity
+    val ownerEntity: CombatEntity
         get() {
             return this.parent as CombatEntity
         }

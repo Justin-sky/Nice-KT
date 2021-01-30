@@ -18,11 +18,9 @@ import io.vertx.core.json.JsonObject
 )
 open abstract class Component {
     var _id:Long = 1
-    @JsonIgnore
-    val query = JsonObject().put("_id",_id)  //entity查询条件
 
     @JsonIgnore
-    var enable:Boolean = true
+    open var enable:Boolean = true
 
     val disable:Boolean
         @JsonIgnore
@@ -30,19 +28,15 @@ open abstract class Component {
             return !enable
         }
 
-    @JsonIgnore
+
     var isDisposed:Boolean = false
+        @JsonIgnore
+        get
 
     @JsonBackReference  //加此此注解。。不会被序列化，解决循环依赖问题
-    var entity:Entity? = null
-        get() {
-            return field
-        }
-        set(value) {
-            field = value
-            query.put("_id", field!!._id)
-        }
+    lateinit var entity:Entity
 
+    @JsonIgnore
     fun <T> getEntityT():T where T:Entity{
         return entity as T
     }

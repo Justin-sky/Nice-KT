@@ -76,6 +76,10 @@ open abstract class Entity {
 
 
     var _id:Long = 0
+
+    @JsonIgnore
+    var name:String? = ""
+
     var docName:String = "user"  //DB中的Document名称
 
     @JsonIgnore
@@ -139,6 +143,7 @@ open abstract class Entity {
         MasterEntity.entities[this::class.java]?.remove(this)
     }
 
+    @JsonIgnore
     fun <T> getParentT():T where T:Entity{
         return this.parent as T
     }
@@ -222,7 +227,26 @@ open abstract class Entity {
         removeComponentJson.put("components.${name}", 1)
     }
 
+    inline fun <reified T :KClass<*>> publish(tEvent:T):T{
+        val eventComponent = getComponent<EventComponent>() ?: return  tEvent
+        eventComponent.publish(tEvent)
+        return  tEvent
+    }
 
+    inline fun <reified T:KClass<*>> subscribe(noinline action:(t:T)->Unit):EventSubscribe<T>{
+        var eventComponent = getComponent<EventComponent>()
+        if (eventComponent == null) {
+            eventComponent = addComponent<EventComponent>()
+        }
+        return eventComponent.subscribe(action)
+    }
+
+    inline fun <reified T:KClass<*>> unScribe(noinline action:(t:T)->Unit){
+        var eventComponent = getComponent<EventComponent>()
+        if (eventComponent != null) {
+            eventComponent.unSubscribe(action)
+        }
+    }
 
 }
 

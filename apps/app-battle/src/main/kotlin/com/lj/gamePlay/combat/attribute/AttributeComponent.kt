@@ -9,23 +9,53 @@ class AttributeComponent: Component() {
 
     private val attributeNumerics = mutableMapOf<String, FloatNumberic>()
 
+    val moveSpeed:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.MoveSpeed.name]!!
+        }
+    val causeDamage:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.CauseDamage.name]!!
+        }
+    val healthPoint:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.HealthPoint.name]!!
+        }
+    val attackPower:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.AttackPower.name]!!
+        }
+    val attackDefense:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.AttackDefense.name]!!
+        }
+    val criticalProbability:FloatNumberic
+        get() {
+            return attributeNumerics[AttributeType.CriticalProbability.name]!!
+        }
+
     override fun setup(){
         this.initialize()
     }
 
-    fun initialize(){
-        this.addNumeric(AttributeType.HealthPoint.name, 99_999f)
-        this.addNumeric(AttributeType.AttackPower.name, 1000f)
-        this.addNumeric(AttributeType.AttackDefense.name, 300f)
-        this.addNumeric(AttributeType.CriticalProbability.name, .5f)
+    private fun initialize(){
+        this.addNumeric(AttributeType.HealthPoint, 99_999f)
+        this.addNumeric(AttributeType.MoveSpeed, 1f)
+        this.addNumeric(AttributeType.CauseDamage, 1f)
+        this.addNumeric(AttributeType.AttackPower, 1000f)
+        this.addNumeric(AttributeType.AttackDefense, 300f)
+        this.addNumeric(AttributeType.CriticalProbability, .5f)
 
     }
 
-    fun addNumeric(type:String, baseValue:Float): FloatNumberic {
+    fun addNumeric(attributeType: AttributeType, baseValue:Float): FloatNumberic {
         val numeric = FloatNumberic()
         numeric.baseValue = baseValue
-
-        this.attributeNumerics[type] = numeric
+        this.attributeNumerics[attributeType.name] = numeric
         return numeric
+    }
+
+    fun getNumeric(attributeName:String):FloatNumberic{
+        return attributeNumerics[attributeName]!!
     }
 }

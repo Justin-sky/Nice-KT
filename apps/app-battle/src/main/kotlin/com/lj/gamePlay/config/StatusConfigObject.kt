@@ -29,8 +29,8 @@ class StatusConfigObject {
 }
 
 class ChildStatus{
-    var statusConfigObject:String?=null
-    var params:MutableMap<String,String>?=null
+    var statusConfigObject:StatusConfigObject?=null //状态效果
+    var params:MutableMap<String,String>?= mutableMapOf() //参数列表
 }
 
 enum class StatusType{

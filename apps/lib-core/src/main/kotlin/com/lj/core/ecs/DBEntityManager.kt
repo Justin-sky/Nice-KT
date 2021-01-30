@@ -47,7 +47,7 @@ object DBEntityManager {
             val updateJson = component.getUpdateJson()
             val unsetJson = component.getUnsetJson()
 
-            val q = component.query
+            val q = JsonObject().put("_id",entity._id)
 
             if(!updateJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$set",updateJson))
             if(!unsetJson.isEmpty) gameServerMongo.updateCollectionAwait(entity.docName, q, JsonObject().put("\$unset",unsetJson))
