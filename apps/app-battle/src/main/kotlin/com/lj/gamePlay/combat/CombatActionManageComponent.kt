@@ -3,7 +3,7 @@ package com.lj.gamePlay.combat
 import com.lj.core.ecs.Component
 import com.lj.core.ecs.Entity
 import com.lj.gamePlay.combat.action.CombatAction
-import com.lj.gamePlay.combat.combatEntity.CombatEntity
+import com.lj.gamePlay.combat.entity.CombatEntity
 
 /**
  * 战斗行动管理组件

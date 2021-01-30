@@ -1,7 +1,7 @@
 package com.lj.gamePlay.combat.action
 
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.combatEntity.CombatEntity
+import com.lj.gamePlay.combat.entity.CombatEntity
 
 
 enum class ActionType{
@@ -21,7 +21,7 @@ abstract class CombatAction : Entity() {
     abstract var actionType:ActionType
 
     lateinit var creator: CombatEntity
-    lateinit var target:CombatEntity
+    lateinit var target: CombatEntity
 
     open fun applyAction(){
 

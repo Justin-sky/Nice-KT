@@ -1,7 +1,7 @@
 package com.lj.gamePlay.combat.ability
 
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.combatEntity.CombatEntity
+import com.lj.gamePlay.combat.entity.CombatEntity
 
 /**
  * 能力执行体，能力执行体是实际创建执行能力表现，触发应用能力效果的地方
@@ -11,7 +11,7 @@ abstract class AbilityExecution :Entity(){
 
     lateinit var abilityEntity:AbilityEntity
 
-    val owenEntity:CombatEntity
+    val owenEntity: CombatEntity
         get() {
             return (this.parent as CombatEntity)
         }
