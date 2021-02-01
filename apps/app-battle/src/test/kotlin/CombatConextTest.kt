@@ -1,8 +1,8 @@
 import com.lj.core.ecs.Entity
 import com.lj.core.gamePlay.combat.CombatContext
 import com.lj.core.gamePlay.combat.entity.CombatEntity
-import com.lj.skills.Skill1001Ability
-import com.lj.status.StatusScare
+import com.lj.battle.skills.Skill1001Ability
+import com.lj.battle.status.StatusScare
 import com.lj.core.gamePlay.combat.entity.action.ActionPointType
 import com.lj.core.gamePlay.combat.entity.action.DamageAction
 import com.lj.core.gamePlay.config.BattleConfigManager

@@ -1,4 +1,4 @@
-package com.lj.skills
+package com.lj.battle.skills
 
 import com.lj.core.gamePlay.combat.entity.CombatEntity
 import com.lj.core.gamePlay.combat.entity.ability.AbilityExecution

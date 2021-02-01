@@ -1,16 +1,19 @@
 package com.lj
 
+import com.lj.battle.BattleManager
 import com.lj.core.consts.EventBusAddress
+import com.lj.core.gamePlay.combat.timer.Time
 import com.lj.core.service.GameService
 import com.lj.core.service.impl.GameServiceImpl
+import io.vertx.core.Launcher
 import io.vertx.serviceproxy.ServiceBinder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kt.scaffold.Application
 import kt.scaffold.common.MicroServiceVerticle
 import kt.scaffold.net.DiscoveryManager
 
 class BattleServerServiceVerticle:MicroServiceVerticle() {
-
-    private val battles = mutableMapOf<Long, GamePlay>()
 
     override suspend fun start() {
         super.start()
@@ -31,5 +34,10 @@ class BattleServerServiceVerticle:MicroServiceVerticle() {
             serverType.toInt()
         )
 
+        vertx.setPeriodic(Time.deltaTime.toLong()){
+            GlobalScope.launch {
+                BattleManager.update()
+            }
+        }
     }
 }

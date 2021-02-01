@@ -1,4 +1,4 @@
-package com.lj.passives
+package com.lj.battle.passives
 
 import com.lj.core.gamePlay.combat.entity.ability.status.StatusAbility
 import com.lj.core.gamePlay.combat.timer.GameTimer

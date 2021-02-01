@@ -44,6 +44,9 @@ tasks.withType<Delete> {
     }
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
