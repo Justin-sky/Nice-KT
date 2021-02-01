@@ -1,7 +1,7 @@
-package com.lj.gamePlay.combat.status.logic
+package com.lj.gamePlay.combat.entity.logic
 
 import com.lj.core.ecs.Component
-import com.lj.gamePlay.combat.status.StatusAbility
+import com.lj.gamePlay.combat.entity.ability.status.StatusAbility
 import com.lj.gamePlay.helper.ExpressionHelper
 import com.lj.gamePlay.combat.timer.GameTimer
 

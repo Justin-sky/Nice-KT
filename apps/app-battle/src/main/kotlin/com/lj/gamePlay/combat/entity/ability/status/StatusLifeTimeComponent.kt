@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.status
+package com.lj.gamePlay.combat.entity.ability.status
 
 import com.lj.core.ecs.Component
 import com.lj.gamePlay.combat.timer.GameTimer

@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.condition
+package com.lj.gamePlay.combat.entity.condition
 
 import com.lj.core.ecs.Entity
 

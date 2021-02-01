@@ -2,8 +2,7 @@ package com.lj.gamePlay.config.effect
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.lj.core.ecs.entity.PlayerEntity
-import com.lj.gamePlay.combat.action.ActionPointType
+import com.lj.gamePlay.combat.entity.action.ActionPointType
 import com.lj.gamePlay.config.*
 
 

@@ -1,8 +1,8 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
-import com.lj.gamePlay.combat.ability.AbilityEntity
-import com.lj.gamePlay.combat.status.StatusAbility
-import com.lj.gamePlay.combat.status.StatusLifeTimeComponent
+import com.lj.gamePlay.combat.entity.ability.AbilityEntity
+import com.lj.gamePlay.combat.entity.ability.status.StatusAbility
+import com.lj.gamePlay.combat.entity.ability.status.StatusLifeTimeComponent
 import com.lj.gamePlay.config.BattleConfigManager
 import com.lj.gamePlay.config.effect.AddStatusEffect
 import com.lj.gamePlay.config.effect.DamageEffect

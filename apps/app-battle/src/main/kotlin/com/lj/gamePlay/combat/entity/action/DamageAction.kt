@@ -1,9 +1,8 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
 import com.lj.gamePlay.combat.attribute.AttributeComponent
 import com.lj.gamePlay.config.effect.DamageEffect
 import com.lj.gamePlay.helper.ExpressionHelper
-import org.w3c.dom.Attr
 import kotlin.math.max
 import kotlin.random.Random
 

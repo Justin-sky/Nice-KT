@@ -1,7 +1,7 @@
-package com.lj.gamePlay.combat.condition
+package com.lj.gamePlay.combat.entity.condition
 
-import com.lj.gamePlay.combat.action.ActionPointType
-import com.lj.gamePlay.combat.action.CombatAction
+import com.lj.gamePlay.combat.entity.action.ActionPointType
+import com.lj.gamePlay.combat.entity.action.CombatAction
 import com.lj.gamePlay.combat.entity.CombatEntity
 import com.lj.gamePlay.combat.timer.GameTimer
 

@@ -1,7 +1,7 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
-import com.lj.gamePlay.combat.skill.SkillAbility
-import com.lj.gamePlay.combat.skill.SkillAbilityExecution
+import com.lj.gamePlay.combat.entity.ability.skill.SkillAbility
+import com.lj.gamePlay.combat.entity.ability.skill.SkillAbilityExecution
 
 /**
  * 施放技能行动

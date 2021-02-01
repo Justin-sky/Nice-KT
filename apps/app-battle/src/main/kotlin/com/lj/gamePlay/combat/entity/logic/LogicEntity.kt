@@ -1,12 +1,11 @@
-package com.lj.gamePlay.combat.status.logic
+package com.lj.gamePlay.combat.entity.logic
 
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.action.DamageAction
+import com.lj.gamePlay.combat.entity.action.DamageAction
 import com.lj.gamePlay.combat.entity.CombatEntity
-import com.lj.gamePlay.combat.status.StatusAbility
+import com.lj.gamePlay.combat.entity.ability.status.StatusAbility
 import com.lj.gamePlay.config.effect.DamageEffect
 import com.lj.gamePlay.config.effect.Effect
-import org.apache.zookeeper.data.Stat
 
 class LogicEntity :Entity() {
     lateinit var effect:Effect

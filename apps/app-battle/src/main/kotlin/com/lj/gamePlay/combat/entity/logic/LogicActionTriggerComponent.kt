@@ -1,8 +1,8 @@
-package com.lj.gamePlay.combat.status.logic
+package com.lj.gamePlay.combat.entity.logic
 
 import com.lj.core.ecs.Component
-import com.lj.gamePlay.combat.action.CombatAction
-import com.lj.gamePlay.combat.status.StatusAbility
+import com.lj.gamePlay.combat.entity.action.CombatAction
+import com.lj.gamePlay.combat.entity.ability.status.StatusAbility
 
 /**
  * 逻辑行动点触发组件

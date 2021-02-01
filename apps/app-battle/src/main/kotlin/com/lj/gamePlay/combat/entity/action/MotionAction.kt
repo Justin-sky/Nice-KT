@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
 /**
  * 动作行动

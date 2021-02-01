@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
 import com.lj.gamePlay.config.effect.CureEffect
 

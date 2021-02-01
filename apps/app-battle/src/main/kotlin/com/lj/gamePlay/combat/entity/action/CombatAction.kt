@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
 import com.lj.core.ecs.Entity
 import com.lj.gamePlay.combat.entity.CombatEntity

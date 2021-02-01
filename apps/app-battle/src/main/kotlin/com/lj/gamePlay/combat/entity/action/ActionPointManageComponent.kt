@@ -1,7 +1,6 @@
-package com.lj.gamePlay.combat.action
+package com.lj.gamePlay.combat.entity.action
 
 import com.lj.core.ecs.Component
-import javax.swing.Action
 
 /**
  * 行动点，一次战斗行动<see cref="CombatAction"/>会触发战斗实体一系列的行动点

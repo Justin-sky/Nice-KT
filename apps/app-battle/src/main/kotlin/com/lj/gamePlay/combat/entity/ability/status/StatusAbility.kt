@@ -1,14 +1,14 @@
-package com.lj.gamePlay.combat.status
+package com.lj.gamePlay.combat.entity.ability.status
 
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.ability.AbilityEntity
+import com.lj.gamePlay.combat.entity.ability.AbilityEntity
 import com.lj.gamePlay.combat.attribute.AttributeComponent
 import com.lj.gamePlay.combat.attribute.FloatModifier
 import com.lj.gamePlay.combat.entity.CombatEntity
-import com.lj.gamePlay.combat.status.logic.LogicActionTriggerComponent
-import com.lj.gamePlay.combat.status.logic.LogicConditionTriggerComponent
-import com.lj.gamePlay.combat.status.logic.LogicEntity
-import com.lj.gamePlay.combat.status.logic.LogicIntervalTriggerComponent
+import com.lj.gamePlay.combat.entity.logic.LogicActionTriggerComponent
+import com.lj.gamePlay.combat.entity.logic.LogicConditionTriggerComponent
+import com.lj.gamePlay.combat.entity.logic.LogicEntity
+import com.lj.gamePlay.combat.entity.logic.LogicIntervalTriggerComponent
 import com.lj.gamePlay.config.*
 import com.lj.gamePlay.helper.ExpressionHelper
 

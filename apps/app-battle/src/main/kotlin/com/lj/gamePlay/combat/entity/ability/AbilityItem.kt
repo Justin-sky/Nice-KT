@@ -1,4 +1,4 @@
-package com.lj.gamePlay.combat.ability
+package com.lj.gamePlay.combat.entity.ability
 
 /**
  * 能力单元体

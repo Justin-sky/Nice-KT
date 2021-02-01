@@ -2,7 +2,7 @@ package com.lj.gamePlay.combat
 
 import com.lj.core.ecs.Component
 import com.lj.core.ecs.Entity
-import com.lj.gamePlay.combat.action.CombatAction
+import com.lj.gamePlay.combat.entity.action.CombatAction
 import com.lj.gamePlay.combat.entity.CombatEntity
 
 /**

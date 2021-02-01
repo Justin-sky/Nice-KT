@@ -5,13 +5,13 @@ import com.lj.core.ecs.Entity
 import com.lj.core.ecs.MasterEntity
 import com.lj.gamePlay.combat.CombatActionManageComponent
 import com.lj.gamePlay.combat.CombatContext
-import com.lj.gamePlay.combat.ability.AbilityEntity
-import com.lj.gamePlay.combat.action.*
+import com.lj.gamePlay.combat.entity.ability.AbilityEntity
+import com.lj.gamePlay.combat.entity.action.*
 import com.lj.gamePlay.combat.attribute.AttributeComponent
 import com.lj.gamePlay.combat.attribute.HealthPoint
-import com.lj.gamePlay.combat.condition.ConditionManageComponent
-import com.lj.gamePlay.combat.skill.SkillAbility
-import com.lj.gamePlay.combat.status.StatusAbility
+import com.lj.gamePlay.combat.entity.condition.ConditionManageComponent
+import com.lj.gamePlay.combat.entity.ability.skill.SkillAbility
+import com.lj.gamePlay.combat.entity.ability.status.StatusAbility
 import com.lj.gamePlay.config.ActionControlType
 import com.lj.gamePlay.config.ConditionType
 

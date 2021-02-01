@@ -1,6 +1,6 @@
-package com.lj.gamePlay.combat.skill
+package com.lj.gamePlay.combat.entity.ability.skill
 
-import com.lj.gamePlay.combat.ability.AbilityEntity
+import com.lj.gamePlay.combat.entity.ability.AbilityEntity
 import com.lj.gamePlay.config.SkillConfigObject
 import com.lj.gamePlay.config.SkillSpellType
 import com.lj.gamePlay.combat.timer.GameTimer

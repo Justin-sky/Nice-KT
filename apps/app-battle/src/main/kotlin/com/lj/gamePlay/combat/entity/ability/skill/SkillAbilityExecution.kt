@@ -1,7 +1,7 @@
-package com.lj.gamePlay.combat.skill
+package com.lj.gamePlay.combat.entity.ability.skill
 
 import com.badlogic.gdx.math.Vector3
-import com.lj.gamePlay.combat.ability.AbilityExecution
+import com.lj.gamePlay.combat.entity.ability.AbilityExecution
 import com.lj.gamePlay.combat.entity.CombatEntity
 
 class SkillAbilityExecution:AbilityExecution() {
