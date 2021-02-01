@@ -25,13 +25,27 @@ enum class ActionType{
  */
 abstract class CombatAction : Entity() {
 
-    abstract var actionType:ActionType
+    abstract var actionType: ActionType
 
     lateinit var creator: CombatEntity
     lateinit var target: CombatEntity
 
-    open fun applyAction(){
+    protected open fun preProcess() {
 
+    }
+
+    protected open fun process(){
+
+    }
+
+    protected open fun postProcess() {
+
+    }
+
+    fun applyAction() {
+        this.preProcess()
+        this.process()
+        this.postProcess()
     }
 
 }

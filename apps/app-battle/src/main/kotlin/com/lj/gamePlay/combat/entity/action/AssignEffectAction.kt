@@ -19,13 +19,8 @@ class AssignEffectAction:CombatAction() {
     lateinit var effect:Effect
     lateinit var status:StatusAbility
 
-    ////前置处理
-    private fun preProcess(){
 
-    }
-
-    fun applyAssignEffect(){
-        preProcess()
+    override fun process() {
 
         if (effect is DamageEffect){
 
@@ -52,11 +47,11 @@ class AssignEffectAction:CombatAction() {
             status.tryActivateAbility()
         }
 
-        postProcess()
     }
 
+
     ////后置处理
-    private fun postProcess(){
+    override fun postProcess(){
         if (effect is AddStatusEffect){
             creator.triggerActionPoint(ActionPointType.PostGiveStatus, this)
             target.triggerActionPoint(ActionPointType.PostReceiveStatus, this)

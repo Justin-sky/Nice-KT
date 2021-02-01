@@ -27,7 +27,7 @@ class DamageAction:CombatAction() {
     }
 
     ////前置处理
-    private fun preProcess(){
+    override fun preProcess(){
         if (damageSource == DamageSource.Attack){
             var prob = creator.getComponent<AttributeComponent>()?.criticalProbability?.value
             isCritical = Random(100).nextInt()/100f < prob!!
@@ -60,17 +60,13 @@ class DamageAction:CombatAction() {
         }
     }
 
-    //应用伤害
-    fun applyDamage(){
-        preProcess()
-
+    override fun process() {
         target.receiveDamage(this)
 
-        postProcess()
     }
 
     //后置处理
-    private fun postProcess(){
+    override fun postProcess(){
         //触发 造成伤害后 行动点
         creator.triggerActionPoint(ActionPointType.PostCauseDamage, this)
         target.triggerActionPoint(ActionPointType.PostCauseDamage, this)

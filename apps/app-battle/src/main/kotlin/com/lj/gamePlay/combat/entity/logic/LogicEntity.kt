@@ -20,7 +20,7 @@ class LogicEntity :Entity() {
             val damageAction = getParentT<StatusAbility>().caster?.createCombatAction<DamageAction>()
             damageAction?.target = getParentT<StatusAbility>().getParentT<CombatEntity>()
             damageAction?.damageSource = DamageAction.DamageSource.Buff
-            damageAction?.applyDamage()
+            damageAction?.applyAction()
         }else{
             getParentT<StatusAbility>().applyEffectTo(getParentT<StatusAbility>().ownerEntity, effect)
         }

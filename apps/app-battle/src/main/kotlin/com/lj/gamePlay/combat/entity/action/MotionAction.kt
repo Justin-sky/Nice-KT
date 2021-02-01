@@ -9,18 +9,16 @@ class MotionAction:CombatAction() {
     var motionType:Int = 0
 
     ////前置处理
-    private fun preProcess() {
+    override fun preProcess() {
 
     }
 
-    fun applyMotion(){
-        preProcess()
+    override fun process() {
 
-        postProcess()
     }
 
     //后置处理
-    private fun postProcess() {
+    override fun postProcess() {
 
     }
 

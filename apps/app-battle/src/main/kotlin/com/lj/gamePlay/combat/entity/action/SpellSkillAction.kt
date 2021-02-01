@@ -14,12 +14,11 @@ class SpellSkillAction:CombatAction() {
     var skillAbilityExecution: SkillAbilityExecution?=null
 
     //前置处理
-    private fun preProcess(){
+    override fun preProcess(){
 
     }
 
-    fun spellSkill(){
-        preProcess()
+    override fun process(){
 
         if (skillAbilityExecution == null){
             skillAbility.applyAbilityEffectsTo(target)
@@ -27,11 +26,10 @@ class SpellSkillAction:CombatAction() {
             skillAbilityExecution?.beginExecute()
         }
 
-        postProcess()
     }
 
     ////后置处理
-    private fun postProcess(){
+    override fun postProcess(){
 
     }
 }

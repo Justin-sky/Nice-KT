@@ -11,20 +11,17 @@ class CureAction :CombatAction() {
     var cureEffect:CureEffect?=null
     var cureValue:Int = 0   //治疗数值
 
-    //前置处理
-    private fun preProcess(){
+    override fun preProcess() {
         cureValue = cureEffect?.cureValueFormula?.toInt() ?: 0
     }
 
-    fun applyCure(){
-        preProcess()
+    override fun process() {
         target.receiveCure(this)
-        postProcess()
     }
 
-    //后置处理
-    private fun postProcess(){
+    override fun postProcess() {
         creator.triggerActionPoint(ActionPointType.PostGiveCure, this)
         target.triggerActionPoint(ActionPointType.PostGiveCure, this)
     }
+
 }
