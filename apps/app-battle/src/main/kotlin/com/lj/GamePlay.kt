@@ -1,5 +1,6 @@
 package com.lj
 
+import com.lj.core.gamePlay.combat.CombatContext
 import com.lj.core.gamePlay.combat.timer.Time
 
 class GamePlay {
@@ -9,6 +10,7 @@ class GamePlay {
     private var isEndOfGame:Boolean = false
     private val enemyTurnDuration = 3f
 
+    lateinit var combatContext: CombatContext
 
 
     fun update(){

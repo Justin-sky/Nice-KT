@@ -1,26 +1,25 @@
 package com.lj
 
+import com.lj.core.net.msg.MsgMessageCodec
+import com.lj.core.service.Msg
+import fb.FBManager
 import kt.scaffold.Application
-import kt.scaffold.tools.Number
-import kt.scaffold.tools.logger.Logger
 
 
-class A{
-    lateinit var a:String
-    lateinit var b:MutableMap<Int,String>
-}
+suspend fun main() {
 
-
-fun main() {
+    //加载静态表数据
+    FBManager.initialize()
 
     //初始化Vertx
     Application.setupVertx()
 
 
+    //启动Game Server
+    Application.deployVerticle(BattleServerServiceVerticle::class.java.name,"BattleServerVerticle")
 
+    //注册eventbus编码器
+    val eventBus = Application.vertx.eventBus()
+    eventBus.registerDefaultCodec(Msg::class.java, MsgMessageCodec())
 
-    val num = Number(10.0)
-
-    Logger.debug(num.toString())
-    Logger.debug(num.value.toString())
 }
