@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
     JsonSubTypes.Type(value = PlayerEntity::class, name = "player")
 )
 
-open abstract class Entity {
+abstract class Entity {
     companion object {
 
         inline fun <reified T> new():T where T:Entity{
@@ -94,16 +94,10 @@ open abstract class Entity {
     @JsonIgnore
     var parent:Entity?=null
         @JsonIgnore
-        get() {
-            return field
-        }
+        get
         @JsonIgnore
         set(value) {
             field = value
-
-            value?.removeChild(this)
-            value?.addChild(this)
-
             this.onSetParent(value)
         }
 
@@ -149,6 +143,7 @@ open abstract class Entity {
         MasterEntity.entities[this::class.java]?.remove(this)
     }
 
+    @Suppress("UNCHECKED_CAST")
     @JsonIgnore
     fun <T> getParentT():T where T:Entity{
         return this.parent as T

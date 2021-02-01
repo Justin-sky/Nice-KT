@@ -1,7 +1,5 @@
 package com.lj
 
-import com.lj.gamePlay.config.BattleConfigManager
-import com.lj.gamePlay.config.BattleConfigType
 import kt.scaffold.Application
 import kt.scaffold.tools.Number
 import kt.scaffold.tools.logger.Logger

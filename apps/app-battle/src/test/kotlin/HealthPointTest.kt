@@ -1,5 +1,4 @@
-import com.lj.gamePlay.combat.attribute.FloatNumberic
-import com.lj.gamePlay.combat.attribute.HealthPoint
+import com.lj.core.gamePlay.combat.attribute.HealthPoint
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

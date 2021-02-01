@@ -1,5 +1,5 @@
-import com.lj.gamePlay.combat.attribute.FloatModifier
-import com.lj.gamePlay.combat.attribute.FloatNumberic
+import com.lj.core.gamePlay.combat.attribute.FloatModifier
+import com.lj.core.gamePlay.combat.attribute.FloatNumberic
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

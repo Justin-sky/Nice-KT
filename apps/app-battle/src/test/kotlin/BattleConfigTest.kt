@@ -1,9 +1,7 @@
-import com.lj.gamePlay.combat.attribute.FloatNumberic
-import com.lj.gamePlay.config.BattleConfigManager
+import com.lj.core.gamePlay.config.BattleConfigManager
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertTrue
 
 class BattleConfigTest {
 

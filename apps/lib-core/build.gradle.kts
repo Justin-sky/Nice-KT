@@ -42,6 +42,10 @@ dependencies {
     api("com.google.protobuf:protobuf-gradle-plugin:0.8.14")
 }
 
+//中文乱码
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
 
 tasks.register<Jar>("sourcesJar") {
     from(sourceSets.main.get().allSource)
