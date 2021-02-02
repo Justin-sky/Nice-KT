@@ -1,4 +1,4 @@
-package com.lj.battle.handler
+package com.lj.battle.msg.handler
 
 import com.lj.core.common.ServiceHandlerAnnotation
 import com.lj.core.net.Opcode
