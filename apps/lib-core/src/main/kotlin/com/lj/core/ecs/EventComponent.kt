@@ -25,30 +25,11 @@ class  EventSubscribeCollection<T>{
 
 class EventSubscribe<T>{
     lateinit var eventAction:(t:T)->Unit
-    var coroutine:Boolean = false
-
-    fun asCoroutine(){
-        coroutine = true
-    }
 }
 
 class EventComponent :Component() {
     override var enable: Boolean = true
-
     val eventSubscribeCollections = mutableMapOf<KClass<*>, Any>()
-    val coroutineEventSubscribeQueue = mutableMapOf<Any, Any>()
-
-    override fun update() {
-        coroutineEventSubscribeQueue.forEach{ item->
-            val event = item.key
-
-            val eventSubscribe = item.value
-            val field = eventSubscribe.javaClass.getField("eventAction")
-            val value = field.get(eventSubscribe)
-            value.javaClass.getMethod("invoke").invoke(value, event)
-        }
-        coroutineEventSubscribeQueue.clear()
-    }
 
     inline fun <reified T> publish(tEvent:T):T{
         val collection = this.eventSubscribeCollections[T::class]
@@ -57,11 +38,7 @@ class EventComponent :Component() {
             if (eventSubscribeCollection.subscribes.size == 0) return tEvent
 
             eventSubscribeCollection.subscribes.forEach { item->
-                if (!item.coroutine){
-                    item.eventAction.invoke(tEvent)
-                }else{
-                    coroutineEventSubscribeQueue.put(tEvent!!, item)
-                }
+                item.eventAction.invoke(tEvent)
             }
         }
         return tEvent
