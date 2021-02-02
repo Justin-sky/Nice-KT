@@ -71,7 +71,7 @@ class CombatEntity:Entity() {
     }
 
     fun receiveCure(combatAction: CombatAction){
-        var cureAction = combatAction as CureAction
+        val cureAction = combatAction as CureAction
         currentHealth.add(cureAction.cureValue)
     }
 
@@ -82,9 +82,10 @@ class CombatEntity:Entity() {
         return ability
     }
 
-    inline fun <reified T> attachSkill(configObject: Any) where T:SkillAbility{
+    inline fun <reified T> attachSkill(configObject: Any) :T where T:SkillAbility{
         val skill = attachAbility<T>(configObject)
         nameSkills[skill.skillConfigObject.name] = skill
+        return skill
     }
 
     inline fun <reified T> attachStatus(configObject: Any):T where T:StatusAbility{
@@ -108,8 +109,7 @@ class CombatEntity:Entity() {
                 statusId = statusAbility._id
             }
         }
-        TODO("这里有问题")
-        this.publish(f::class)
+        this.publish<RemoveStatusEvent>(f)
     }
 
     fun <T> hasStatus(statusType:T):Boolean where T:StatusAbility{

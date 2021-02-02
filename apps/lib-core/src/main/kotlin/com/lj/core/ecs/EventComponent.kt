@@ -3,14 +3,16 @@ package com.lj.core.ecs
 import kotlin.reflect.KClass
 
 
-class  EventSubscribeCollection<T> where T:KClass<*>{
+class  EventSubscribeCollection<T>{
     val subscribes = mutableListOf<EventSubscribe<T>>()
-    val action2Subscribes = mutableMapOf<(t:T)->Unit, EventSubscribe<T>>()
+    private val action2Subscribes = mutableMapOf<(t:T)->Unit, EventSubscribe<T>>()
 
     fun add(action: (t:T) -> Unit): EventSubscribe<T>{
         val eventSubscribe = EventSubscribe<T>()
         eventSubscribe.eventAction = action
+
         subscribes.add(eventSubscribe)
+        action2Subscribes[action] = eventSubscribe
 
         return  eventSubscribe
     }
@@ -39,32 +41,33 @@ class EventComponent :Component() {
     override fun update() {
         coroutineEventSubscribeQueue.forEach{ item->
             val event = item.key
+
             val eventSubscribe = item.value
-            val field = eventSubscribe.javaClass.getField("EventAction")
+            val field = eventSubscribe.javaClass.getField("eventAction")
             val value = field.get(eventSubscribe)
-            value.javaClass.getMethod("Invoke").invoke(value, event)
+            value.javaClass.getMethod("invoke").invoke(value, event)
         }
         coroutineEventSubscribeQueue.clear()
     }
 
-    inline fun <reified T:KClass<*>> publish(tEvent:T):T{
+    inline fun <reified T> publish(tEvent:T):T{
         val collection = this.eventSubscribeCollections[T::class]
         val eventSubscribeCollection = collection as? EventSubscribeCollection<T>
         if (eventSubscribeCollection != null){
-            if (eventSubscribeCollection?.subscribes.size == 0) return tEvent
+            if (eventSubscribeCollection.subscribes.size == 0) return tEvent
 
-            eventSubscribeCollection?.subscribes.forEach { item->
+            eventSubscribeCollection.subscribes.forEach { item->
                 if (!item.coroutine){
                     item.eventAction.invoke(tEvent)
                 }else{
-                    coroutineEventSubscribeQueue[tEvent] = item
+                    coroutineEventSubscribeQueue.put(tEvent!!, item)
                 }
             }
         }
         return tEvent
     }
 
-    inline fun <reified T:KClass<*>> subscribe(noinline action:(t:T)->Unit): EventSubscribe<T> {
+    inline fun <reified T> subscribe(noinline action:(t:T)->Unit): EventSubscribe<T> {
         val collection = eventSubscribeCollections[T::class]
         var eventSubscribeCollection = collection as? EventSubscribeCollection<T>
         if (eventSubscribeCollection == null) {

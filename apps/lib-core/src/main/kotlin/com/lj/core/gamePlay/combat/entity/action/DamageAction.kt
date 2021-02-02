@@ -69,7 +69,7 @@ class DamageAction:CombatAction() {
     override fun postProcess(){
         //触发 造成伤害后 行动点
         creator.triggerActionPoint(ActionPointType.PostCauseDamage, this)
-        target.triggerActionPoint(ActionPointType.PostCauseDamage, this)
+        target.triggerActionPoint(ActionPointType.PostReceiveDamage, this)
     }
 
     enum class DamageSource{

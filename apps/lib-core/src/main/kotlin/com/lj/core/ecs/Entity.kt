@@ -179,7 +179,7 @@ abstract class Entity {
 
     inline fun <reified T> addComponent(saveDb:Boolean = false):T where T:Component{
         val clz = T::class.java
-        var mCreate = clz.getDeclaredConstructor()
+        val mCreate = clz.getDeclaredConstructor()
         mCreate.isAccessible = true
 
         val c = mCreate.newInstance()
@@ -200,7 +200,7 @@ abstract class Entity {
 
     inline fun <reified T> addComponent(initData: Any):T where T:Component{
         val clz = T::class.java
-        var mCreate = clz.getDeclaredConstructor()
+        val mCreate = clz.getDeclaredConstructor()
         mCreate.isAccessible = true
 
         val c = mCreate.newInstance()
@@ -228,16 +228,16 @@ abstract class Entity {
         removeComponentJson.put("components.${name}", 1)
     }
 
-    inline fun <reified T :KClass<*>> publish(tEvent:T):T{
+    inline fun <reified T> publish(tEvent:T):T{
         val eventComponent = getComponent<EventComponent>() ?: return  tEvent
         eventComponent.publish(tEvent)
         return  tEvent
     }
 
-    inline fun <reified T:KClass<*>> subscribe(noinline action:(t:T)->Unit):EventSubscribe<T>{
+    inline fun <reified T> subscribe(noinline action:(t:T)->Unit):EventSubscribe<T>{
         var eventComponent = getComponent<EventComponent>()
         if (eventComponent == null) {
-            eventComponent = addComponent<EventComponent>()
+            eventComponent = addComponent()
         }
         return eventComponent.subscribe(action)
     }
