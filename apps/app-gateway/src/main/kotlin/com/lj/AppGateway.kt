@@ -23,8 +23,9 @@ suspend fun main(args:Array<String>){
     }
 
     //网关服监听推送消息
-    val eventBus = Application.vertx.eventBus()
-    eventBus.registerDefaultCodec(Msg::class.java, MsgMessageCodec())
+    val eventBus = Application.vertx.eventBus().apply {
+        registerDefaultCodec(Msg::class.java, MsgMessageCodec())
+    }
 
     val consumer = eventBus.consumer<Msg>(EventBusAddress.PUSH2CLIENT_ADDRESS)
     consumer.handler { message ->
