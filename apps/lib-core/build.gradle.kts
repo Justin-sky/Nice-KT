@@ -24,6 +24,7 @@ dependencies {
     api("io.vertx:vertx-lang-kotlin-gen:$vertxVersion")
     api("io.vertx:vertx-service-proxy:$vertxVersion")
     api("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
+
     api("com.google.protobuf:protobuf-java:$protobufVersion")
     api("com.google.flatbuffers:flatbuffers-java:1.12.0")
 

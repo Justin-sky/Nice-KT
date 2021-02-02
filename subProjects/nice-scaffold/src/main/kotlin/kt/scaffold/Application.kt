@@ -8,6 +8,7 @@ import io.vertx.core.Vertx
 import io.vertx.core.VertxOptions
 import io.vertx.core.json.JsonObject
 import io.vertx.core.net.NetServerOptions
+import io.vertx.ext.dropwizard.DropwizardMetricsOptions
 import jodd.exception.ExceptionUtil
 import jodd.io.FileNameUtil
 import jodd.io.FileUtil
@@ -191,6 +192,10 @@ object Application {
             val jsonOpts = JsonObject(configContent)
             val opts = VertxOptions(jsonOpts)
 
+            //https://github.com/hawtio/hawtio/releases/tag/hawtio-2.12.1
+            //https://jolokia.org/tutorial.html
+
+
             // 需要修正 clusterHost, 不然不同主机节点之间的 EventBus 不会互通
             val hostIp = InetAddress.getLocalHost().hostAddress
             // conf/vertxOptions.json 文件里 如果有配置 clusterHost, 则以配置文件的为有效
@@ -200,6 +205,13 @@ object Application {
                 // 配置文件中不包含 clusterHost 配置项, 并且获取到的主机IP不为空
                 opts.eventBusOptions.host = hostIp
             }
+
+            val dropwizardMetricsOptions = DropwizardMetricsOptions()
+            dropwizardMetricsOptions.isEnabled = true
+            dropwizardMetricsOptions.isJmxEnabled = true  //Enable JMX
+            dropwizardMetricsOptions.jmxDomain = "vertx-metrics"
+            opts.metricsOptions = dropwizardMetricsOptions
+
             return opts
         } catch (ex: Exception) {
             throw RuntimeException("Failed to create vertx options: ${ex.message}")
