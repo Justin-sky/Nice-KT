@@ -2,6 +2,8 @@ package kt.scaffold
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import io.vertx.circuitbreaker.CircuitBreaker
+import io.vertx.circuitbreaker.CircuitBreakerOptions
 import io.vertx.core.AsyncResult
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
@@ -9,6 +11,8 @@ import io.vertx.core.VertxOptions
 import io.vertx.core.json.JsonObject
 import io.vertx.core.net.NetServerOptions
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions
+import io.vertx.ext.dropwizard.Match
+import io.vertx.ext.dropwizard.MatchType
 import jodd.exception.ExceptionUtil
 import jodd.io.FileNameUtil
 import jodd.io.FileUtil
@@ -38,12 +42,11 @@ object Application {
 
     val config: Config
     var appHome: String
-    val classLoader = Application::class.java.classLoader
     val inProductionMode: Boolean
 
     private var _vertx: Vertx? = null
     private const val ktPropertiesUrlKey = "kt.properties.url"
-
+    lateinit var  circuitBreaker: CircuitBreaker
 
     val vertx:Vertx
         get(){
@@ -134,6 +137,7 @@ object Application {
                 Logger.error("Stop vertx failed.")
             }
         }
+
     }
 
     private fun queryPid(): Long {
@@ -179,10 +183,7 @@ object Application {
     }
 
     private fun logClusterNodeId(){
-        if (vertxOptions.eventBusOptions.isClustered) {
-            Logger.info("NodeId: ${vertxOptions.clusterManager.nodeID}")
-            Logger.info("Cluster Nodes: ${vertxOptions.clusterManager.nodes.joinToString(", ")}")
-        }
+        Logger.info("Cluster Nodes: ${vertxOptions.clusterManager.nodes.joinToString(", ")}")
     }
 
     private fun buildVertxOptions():VertxOptions{
@@ -210,6 +211,10 @@ object Application {
             dropwizardMetricsOptions.isEnabled = true
             dropwizardMetricsOptions.isJmxEnabled = true  //Enable JMX
             dropwizardMetricsOptions.jmxDomain = "vertx-metrics"
+            dropwizardMetricsOptions.addMonitoredEventBusHandler(
+                Match().setValue("com.lj.service.*").setType(MatchType.REGEX)
+            )
+
             opts.metricsOptions = dropwizardMetricsOptions
 
             return opts
@@ -259,15 +264,28 @@ object Application {
         if (_vertx != null){
             throw KtException("The vertx of Application has been initialized. Do not initialize it again.")
         }
-        _vertx = appVertx?:createVertx()
 
-        logClusterNodeId()
+        val cluster = config.getBoolean("app.vertx.clustered")
+        _vertx = appVertx?:createVertx(cluster)
+
+        //init circuit breaker instance
+        val cbOptions = circuitBreakerOptions()
+
+        circuitBreaker = CircuitBreaker.create(cbOptions.getString("name", "circuit-breaker"),
+            vertx,
+            CircuitBreakerOptions()
+                .setMaxFailures(cbOptions.getInteger("maxFailures", 5))
+                .setTimeout(cbOptions.getLong("timeout", 10000L))
+                .setFallbackOnFailure(cbOptions.getBoolean("fallbackOnFailure",true))
+                .setResetTimeout(cbOptions.getLong("resetTimeout", 30000L)
+                )
+        )
     }
 
-    fun createVertx():Vertx{
+    fun createVertx(cluster:Boolean = false):Vertx{
         this._vertoptions = buildVertxOptions()
 
-        if (this._vertoptions!!.eventBusOptions.isClustered) {
+        if (cluster) {
             Logger.info("Vertx: cluster mode")
             val future = CompletableFuture<Vertx>()
 

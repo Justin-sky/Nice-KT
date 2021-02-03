@@ -31,5 +31,6 @@ class GameServerServiceVerticle : MicroServiceVerticle() {
             serverID.toInt(),
             serverType.toInt()
         )
+
     }
 }

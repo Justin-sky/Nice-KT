@@ -8,7 +8,11 @@ import com.lj.core.net.msg.MessageDispatcher
 import com.lj.core.net.msg.MsgMessageCodec
 import com.lj.core.service.Msg
 import com.lj.core.service.handler.ServiceDispatcher
+import io.vertx.circuitbreaker.CircuitBreaker
+import io.vertx.circuitbreaker.CircuitBreakerOptions
+import io.vertx.ext.dropwizard.MetricsService
 import kt.scaffold.Application
+import kt.scaffold.tools.logger.Logger
 
 suspend fun main() {
 
@@ -48,5 +52,13 @@ suspend fun main() {
     consumer.handler { message ->
         val msg = message.body()
         SocketManager.pushMsg2Client(msg.userId, msg)
+    }
+
+    //测试 ,查看信息
+    val metricsService = MetricsService.create(Application.vertx)
+    Application.vertx.setPeriodic(1800000){
+        val tcpMetric = metricsService.getMetricsSnapshot("vertx.eventbus.messages.reply-failures")
+        Logger.debug(tcpMetric.toString())
+
     }
 }

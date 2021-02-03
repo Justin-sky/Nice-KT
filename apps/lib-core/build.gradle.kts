@@ -14,7 +14,7 @@ repositories {
 }
 
 val protobufVersion = "3.11.3"
-val vertxVersion = "3.9.4"
+val vertxVersion = "4.0.0"
 
 dependencies {
 
@@ -23,7 +23,6 @@ dependencies {
     api("io.vertx:vertx-codegen:$vertxVersion")
     api("io.vertx:vertx-lang-kotlin-gen:$vertxVersion")
     api("io.vertx:vertx-service-proxy:$vertxVersion")
-    api("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
 
     api("com.google.protobuf:protobuf-java:$protobufVersion")
     api("com.google.flatbuffers:flatbuffers-java:1.12.0")
@@ -32,8 +31,8 @@ dependencies {
     // android gradle依赖：implementation 和compile的区别
     // 参考: https://www.jianshu.com/p/f34c179bc9d0 根据需要选择使用不同的依赖设定方式
 
-    kapt("io.vertx:vertx-codegen:3.9.4:processor")
-    compileOnly("io.vertx:vertx-codegen:3.9.4")
+    kapt("io.vertx:vertx-codegen:$vertxVersion:processor")
+    compileOnly("io.vertx:vertx-codegen:$vertxVersion")
 
 
     configurations.all {

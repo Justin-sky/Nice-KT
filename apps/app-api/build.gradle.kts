@@ -16,7 +16,7 @@ dependencies {
     //api(files("conf"))
     api(project(":apps:lib-core"))
 
-    api("io.vertx:vertx-web:3.9.4")
+    api("io.vertx:vertx-web:4.0.0")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
